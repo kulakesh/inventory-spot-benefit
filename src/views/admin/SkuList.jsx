@@ -1,10 +1,12 @@
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Table from '@/components/ui/Table'
 import Pagination from '@/components/ui/Pagination'
 import Select from '@/components/ui/Select'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
+import { useNavigate } from 'react-router'
 import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi'
 import {
     useReactTable,
@@ -25,11 +27,6 @@ async function apiGetData(){
     })
 }
 
-const fetchedData = await apiGetData()
-
-const totalData = fetchedData.length
-
-
 const pageSizeOption = [
     { value: 10, label: '10 / page' },
     { value: 20, label: '20 / page' },
@@ -39,6 +36,30 @@ const pageSizeOption = [
 ]
 
 const PaginationTable = () => {
+    const navigate = useNavigate()
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await apiGetData()
+                setData(response)
+            } catch (error) {
+                setError(error);
+                console.error('Error fetching data:', error)
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData()
+    }, []);
+
+    const totalData = data.length
+
     const columns = useMemo(
         () => [
             {
@@ -65,8 +86,6 @@ const PaginationTable = () => {
         [],
     )
 
-    const [data] = useState(() => fetchedData)
-
     const table = useReactTable({
         data,
         columns,
@@ -77,6 +96,10 @@ const PaginationTable = () => {
         getSortedRowModel: getSortedRowModel(),
     })
 
+    const handleEdit = (row) => {
+        navigate(`/admin/warehouse/sku/${row.original.id}`)
+    }
+
     const onPaginationChange = (page) => {
         table.setPageIndex(page - 1)
     }
@@ -85,6 +108,9 @@ const PaginationTable = () => {
         table.setPageSize(Number(value))
     }
 
+    if (error) {
+        return <div>Error: {error.message}</div>
+    }
     return (
         <div>
             <Card>
@@ -92,6 +118,7 @@ const PaginationTable = () => {
                 <THead>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <Tr key={headerGroup.id}>
+                            <Th className="w-20">Sl No</Th>
                             {headerGroup.headers.map((header) => {
                                 return (
                                     <Th
@@ -125,10 +152,21 @@ const PaginationTable = () => {
                         </Tr>
                     ))}
                 </THead>
+                {loading ?
+                    <TableRowSkeleton
+                    columns={7}
+                    rows={10}
+                    avatarInColumns={[0]}
+                    avatarProps={{ width: 28, height: 28 }}
+                    />
+                :
                 <TBody>
                     {table.getRowModel().rows.map((row) => {
                         return (
                             <Tr key={row.id}>
+                                <Td>
+                                    {row.index + 1}
+                                </Td>
                                 {row.getVisibleCells().map((cell) => {
                                     return (
                                         <Td key={cell.id}>
@@ -140,13 +178,14 @@ const PaginationTable = () => {
                                     )
                                 })}
                                 <Td>
-                                    <Button icon={<HiOutlinePencil />} variant="solid" size="xs" className="mr-2"/>
-                                    <Button icon={<HiOutlineTrash />} size="xs"/>
+                                    <Button onClick={() => handleEdit(row)} icon={<HiOutlinePencil />} variant="solid" size="xs" className="mr-2"/>
+                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error"/>
                                 </Td>
                             </Tr>
                         )
                     })}
                 </TBody>
+                }
             </Table>
             <div className="flex items-center justify-between mt-4">
                 <Pagination

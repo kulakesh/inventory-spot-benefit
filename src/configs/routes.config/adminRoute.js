@@ -67,6 +67,19 @@ const adminRoute = [
             footer: false,
         },
     },
+    {
+        key: 'admin.warehouse.sku', 
+        path: 'admin/warehouse/sku/:id',
+        component: lazy(() => import('@/views/admin/Sku')),
+        authority: [ADMIN],
+        meta: {
+            header: {
+                title: 'Create SKU',
+            },
+            contained: true,
+            footer: false,
+        },
+    },
 ]
 
 export default adminRoute

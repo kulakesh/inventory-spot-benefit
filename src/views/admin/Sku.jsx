@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react'
 import { FormItem, Form } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -11,8 +12,10 @@ import { z } from 'zod'
 import ApiService from '@/services/ApiService'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import Alert from '@/components/ui/Alert'
+import { useParams, useNavigate } from 'react-router'
 
-const validationSchema = z.object({
+const validationSchema = (id) => {
+    return z.object({
     name: z.string().min(4, 'Name Required'),
     email: z.string().optional(),
     phone: z.string().optional(),
@@ -21,17 +24,32 @@ const validationSchema = z.object({
     address: z.string().optional(),
     pin: z.string().optional(),
     username: z.string().min(4, 'Too Short!').max(12, 'Too Long!'),
-    password: z
-        .string()
+    password: id 
+        ? z.string().optional() 
+        : z.string()
         .min(1, { message: 'Password Required' })
         .min(6, { message: 'Too Short!' })
         .refine(
             (value) => /^[A-Za-z0-9_-]*$/.test(value),
             'Only Letters & Numbers Allowed',
         ),
-})
+
+    })
+}
 
 const Sku = () => {
+    const { id } = useParams()
+    useEffect(() => {
+        if (id) {
+            pullData(id).then((resp) => {
+                if (resp) {
+                    resp.edit = true
+                    reset(resp)
+                }
+            })
+        }
+    }, []);
+    
     const {
         handleSubmit,
         reset,
@@ -41,26 +59,34 @@ const Sku = () => {
     } = useForm({
         defaultValues: {
             name: '',
+            email: '',
+            phone: '',
+            city: '',
+            state: '',
+            address: '',
+            pin: '',
             username: '',
             password: '',
-            email: '',
         },
-        resolver: zodResolver(validationSchema),
+        resolver: zodResolver(validationSchema(id)),
     })
-    
+
     const [message, setMessage] = useTimeOutMessage()
 
     const onSubmit = async (values) => {
-        // window.alert(JSON.stringify(values))
-        // console.log(values);
         try{
+            if (id) {
+                values.id = id
+            }
             const resp = await pushData(values)
             if (resp) {
                 setMessage?.({
-                    text: resp?.message || 'SKU Created Successfully',
+                    text: resp?.message || 'Successfully Saved',
                     type: 'success'
                 })
-                reset()
+                if (!id) {
+                    reset()
+                }
             }
         }catch (e) {
             setMessage?.({
@@ -81,6 +107,12 @@ const Sku = () => {
             url: '/create-sku',
             method: 'post',
             data,
+        })
+    }
+    async function pullData(id) {
+        return ApiService.fetchDataWithAxios({
+            url: `/get-sku/${id}`,
+            method: 'get',
         })
     }
     return (
