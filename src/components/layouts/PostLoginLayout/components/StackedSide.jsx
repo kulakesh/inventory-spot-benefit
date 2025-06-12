@@ -4,6 +4,7 @@ import MobileNav from '@/components/template/MobileNav'
 import UserProfileDropdown from '@/components//template/UserProfileDropdown'
 import LayoutBase from '@/components//template/LayoutBase'
 import useResponsive from '@/utils/hooks/useResponsive'
+import SidePanel from '@/components//template/SidePanel'
 import { LAYOUT_STACKED_SIDE } from '@/constants/theme.constant'
 
 const StackedSide = ({ children }) => {
@@ -22,6 +23,7 @@ const StackedSide = ({ children }) => {
                         headerStart={<>{smaller.lg && <MobileNav />}</>}
                         headerEnd={
                             <>
+                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }

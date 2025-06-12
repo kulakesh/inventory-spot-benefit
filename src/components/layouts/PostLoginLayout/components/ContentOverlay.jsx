@@ -4,6 +4,7 @@ import HeaderLogo from '@/components/template/HeaderLogo'
 import MobileNav from '@/components/template/MobileNav'
 import HorizontalNav from '@/components/template/HorizontalNav'
 import LayoutBase from '@/components//template/LayoutBase'
+import SidePanel from '@/components//template/SidePanel'
 import classNames from '@/utils/classNames'
 import useScrollTop from '@/utils/hooks/useScrollTop'
 import useResponsive from '@/utils/hooks/useResponsive'
@@ -107,6 +108,7 @@ const ContentOverlay = ({ children }) => {
                         headerMiddle={<>{larger.lg && <HorizontalNav />}</>}
                         headerEnd={
                             <>
+                                <SidePanel />
                                 <UserProfileDropdown hoverable={false} />
                             </>
                         }

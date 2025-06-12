@@ -5,9 +5,9 @@ import { useAuth } from '@/auth'
 const { authenticatedEntryPath } = appConfig
 
 const PublicRoute = () => {
-    const { authenticated } = useAuth()
+    const { authenticated, user } = useAuth()
 
-    return authenticated ? <Navigate to={authenticatedEntryPath} /> : <Outlet />
+    return authenticated ? <Navigate to={authenticatedEntryPath[user.authority[0]]} /> : <Outlet />
 }
 
 export default PublicRoute

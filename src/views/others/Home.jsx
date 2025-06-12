@@ -1,16 +1,23 @@
 import { useAuth } from '@/auth'
 import { ADMIN, USER } from '@/constants/roles.constant'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
     const {user, signOut} = useAuth();
-    
-    if(user.authority[0] === ADMIN){
-        window.location.href = '/admin/dashboard'
-    } else if(user.authority[0] === USER){     
-        window.location.href = '/user/dashboard'
-    }else{
-        signOut()
+    const navigate = useNavigate()
+    const signOutPath = {
+        [ADMIN]: '/admin/dashboard',
+        [USER]: '/user/dashboard',
     }
+
+    useEffect(() => {
+        if(user.authority[0]){
+            navigate(signOutPath[user.authority[0]])
+        }else{
+            signOut()
+        }
+    }, []);
+
     return (
         <div>
             <h1>Home</h1>

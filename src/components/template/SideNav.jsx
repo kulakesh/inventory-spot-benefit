@@ -15,6 +15,7 @@ import {
     HEADER_HEIGHT,
     LOGO_X_GUTTER,
 } from '@/constants/theme.constant'
+import { useAuth } from '@/auth'
 
 const sideNavStyle = {
     width: SIDE_NAV_WIDTH,
@@ -39,6 +40,8 @@ const SideNav = ({
         (state) => state.layout.sideNavCollapse,
     )
 
+    const { user } = useAuth()
+    
     const currentRouteKey = useRouteKeyStore((state) => state.currentRouteKey)
     
     const userAuthority = useSessionUser((state) => state.user.authority)
@@ -54,7 +57,7 @@ const SideNav = ({
             )}
         >
             <Link
-                to={appConfig.authenticatedEntryPath}
+                to={appConfig.authenticatedEntryPath[user.authority[0]]}
                 className="side-nav-header flex flex-col justify-center"
                 style={{ height: HEADER_HEIGHT }}
             >

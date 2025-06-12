@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormItem, Form } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -12,20 +12,21 @@ import { z } from 'zod'
 import ApiService from '@/services/ApiService'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
 import Alert from '@/components/ui/Alert'
+import Loading from '@/components/shared/Loading'
 import { useParams, useNavigate } from 'react-router'
 
 const validationSchema = (id) => {
     return z.object({
     name: z.string().min(4, 'Name Required'),
-    email: z.string().optional(),
-    phone: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    address: z.string().optional(),
-    pin: z.string().optional(),
+    email: z.string().nullish(),
+    phone: z.string().nullish(),
+    city: z.string().nullish(),
+    state: z.string().nullish(),
+    address: z.string().nullish(),
+    pin: z.string().nullish(),
     username: z.string().min(4, 'Too Short!').max(12, 'Too Long!'),
     password: id 
-        ? z.string().optional() 
+        ? z.string().nullish() 
         : z.string()
         .min(1, { message: 'Password Required' })
         .min(6, { message: 'Too Short!' })
@@ -37,18 +38,36 @@ const validationSchema = (id) => {
     })
 }
 
+async function pushData(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/create-sku',
+        method: 'post',
+        data,
+    })
+}
+async function pullData(id) {
+    return ApiService.fetchDataWithAxios({
+        url: `/get-sku/${id}`,
+        method: 'get',
+    })
+}
 const Sku = () => {
     const { id } = useParams()
+    const [loading, setLoading] = useState(id ? true : false);
+    const [apierror, setApiError] = useState(null);
+    
     useEffect(() => {
         if (id) {
+            setLoading(true)
             pullData(id).then((resp) => {
-                if (resp) {
-                    resp.edit = true
-                    reset(resp)
-                }
+                reset(resp)
+            }).catch((e) => {
+                setApiError(e?.response?.data || e.toString());
+            }).finally(() => {
+                setLoading(false)
             })
         }
-    }, []);
+    }, [])
     
     const {
         handleSubmit,
@@ -74,6 +93,8 @@ const Sku = () => {
     const [message, setMessage] = useTimeOutMessage()
 
     const onSubmit = async (values) => {
+        console.log('values', values)
+        // return
         try{
             if (id) {
                 values.id = id
@@ -90,7 +111,7 @@ const Sku = () => {
             }
         }catch (e) {
             setMessage?.({
-                text: e?.response?.data?.message || e.toString(),
+                text: e?.response?.data?.message || e.message.toString() || e.toString(),
                 type: 'danger'
             })
             for (var key in e?.response?.data?.errors) {
@@ -100,23 +121,13 @@ const Sku = () => {
                 })
             }
         }
-        
     }
-    async function pushData(data) {
-        return ApiService.fetchDataWithAxios({
-            url: '/create-sku',
-            method: 'post',
-            data,
-        })
-    }
-    async function pullData(id) {
-        return ApiService.fetchDataWithAxios({
-            url: `/get-sku/${id}`,
-            method: 'get',
-        })
+    if (apierror) {
+        return <div>Error: {apierror.message}</div>
     }
     return (
         <>
+            {loading ? <Loading loading={true} /> :
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Card>
                     {message && (
@@ -321,6 +332,7 @@ const Sku = () => {
                     </Container>
                 </BottomStickyBar>
             </Form>
+            }
         </>
     )
 }

@@ -15,6 +15,19 @@ const userRoute = [
             },
         },
     },
+    {
+        key: `${USER}:purchase-order:create`,
+        path: `${USER}/purchase-order/create`,
+        component: lazy(() => import('@/views/user/PurchaseOrder/PurchaseOrder')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Purchase Order',
+            },
+        },
+    },
     
 ]
 

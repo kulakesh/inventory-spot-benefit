@@ -33,13 +33,13 @@ function AuthProvider({ children }) {
 
     const navigatorRef = useRef(null)
 
-    const redirect = () => {
+    const redirect = (authority) => {
         const search = window.location.search
         const params = new URLSearchParams(search)
         const redirectUrl = params.get(REDIRECT_URL_KEY)
-
+        
         navigatorRef.current?.navigate(
-            redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath,
+            redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath[authority]
         )
     }
 
@@ -87,7 +87,7 @@ function AuthProvider({ children }) {
             }
             if (resp) {
                 handleSignIn({ accessToken: resp.token }, resp.user)
-                redirect()
+                redirect(values.authority)
                 return {
                     status: 'success',
                     message: '',
@@ -107,7 +107,7 @@ function AuthProvider({ children }) {
 
     const signOut = async (values) => {
         const signOutPath = {
-            [ADMIN]: '/admin/sign-in',
+            [ADMIN]: '/admin',
             [USER]: '/user/sign-in',
         }
         

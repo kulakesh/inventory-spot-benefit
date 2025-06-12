@@ -42,20 +42,13 @@ const PaginationTable = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await apiGetData()
-                setData(response)
-            } catch (error) {
-                setError(error);
-                console.error('Error fetching data:', error)
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchData()
+        apiGetData().then((response) => {
+            setData(response)
+        }).catch((error) => {
+            setError(error);
+        }).finally(() => {
+            setLoading(false);
+        })
     }, []);
 
     const totalData = data.length
@@ -97,7 +90,7 @@ const PaginationTable = () => {
     })
 
     const handleEdit = (row) => {
-        navigate(`/admin/warehouse/sku/${row.original.id}`)
+        navigate(`/admin/sku/edit/${row.original.id}`)
     }
 
     const onPaginationChange = (page) => {

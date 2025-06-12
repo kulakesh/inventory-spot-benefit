@@ -16,47 +16,21 @@ const adminRoute = [
         },
     },
     {
-        key: 'admin.warehouse.master', 
-        path: 'admin/warehouse/view',
-        component: lazy(() => import('@/views/admin/Warehouse')),
-        authority: [ADMIN],
-        meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
-            header: {
-                title: 'Warehouse',
-            },
-        },
-    },
-    {
-        key: 'admin.warehouse.sku', 
-        path: 'admin/warehouse/sku',
-        component: lazy(() => import('@/views/admin/Sku')),
-        authority: [ADMIN],
-        meta: {
-            header: {
-                title: 'Create SKU',
-            },
-            contained: true,
-            footer: false,
-        },
-    },
-    {
-        key: 'admin.warehouse.skuList', 
-        path: 'admin/warehouse/sku-list',
+        key: 'admin.sku.list', 
+        path: 'admin/sku/list',
         component: lazy(() => import('@/views/admin/SkuList')),
         authority: [ADMIN],
         meta: {
             header: {
-                title: 'SKUs',
+                title: 'SKU List',
             },
             contained: true,
             footer: false,
         },
     },
     {
-        key: 'admin.warehouse.sku', 
-        path: 'admin/warehouse/sku',
+        key: 'admin.sku.create', 
+        path: 'admin/sku/create',
         component: lazy(() => import('@/views/admin/Sku')),
         authority: [ADMIN],
         meta: {
@@ -68,13 +42,13 @@ const adminRoute = [
         },
     },
     {
-        key: 'admin.warehouse.sku', 
-        path: 'admin/warehouse/sku/:id',
+        key: 'admin.sku.edit', 
+        path: 'admin/sku/edit/:id',
         component: lazy(() => import('@/views/admin/Sku')),
         authority: [ADMIN],
         meta: {
             header: {
-                title: 'Create SKU',
+                title: 'Edit SKU',
             },
             contained: true,
             footer: false,

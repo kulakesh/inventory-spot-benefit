@@ -13,6 +13,7 @@ import navigationIcon from '@/configs/navigation-icon.config'
 import useMenuActive from '@/utils/hooks/useMenuActive'
 import isEmpty from 'lodash/isEmpty'
 import { Link } from 'react-router'
+import { useAuth } from '@/auth'
 
 const StackedSideNavMini = (props) => {
     const {
@@ -29,6 +30,8 @@ const StackedSideNavMini = (props) => {
         ...rest
     } = props
 
+    const { user } = useAuth()
+    
     const { includedRouteTree } = useMenuActive(navigationTree, routeKey)
 
     const handleMenuItemSelect = ({ key, title, menu, translateKey }) => {
@@ -66,7 +69,7 @@ const StackedSideNavMini = (props) => {
     return (
         <div {...rest}>
             <Link
-                to={appConfig.authenticatedEntryPath}
+                to={appConfig.authenticatedEntryPath[user.authority[0]]}
                 className="stacked-mini-nav-header flex items-center justify-center"
                 style={{ height: HEADER_HEIGHT }}
             >
