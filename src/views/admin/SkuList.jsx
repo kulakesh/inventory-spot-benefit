@@ -172,7 +172,7 @@ const PaginationTable = () => {
                                 })}
                                 <Td>
                                     <Button onClick={() => handleEdit(row)} icon={<HiOutlinePencil />} variant="solid" size="xs" className="mr-2"/>
-                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error"/>
+                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
                                 </Td>
                             </Tr>
                         )

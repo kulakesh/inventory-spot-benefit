@@ -16,7 +16,7 @@ import { TbSearch, TbMinus, TbPlus } from 'react-icons/tb'
 const { Tr, Th, Td, THead, TBody } = Table
 
 const ProductSelectSection = () => {
-    const { productOption, productList, selectedProduct, setSelectedProduct } =
+    const { productList, selectedProduct, setSelectedProduct } =
         useOrderFormStore()
 
     const [inputValue, setInputValue] = useState('')
@@ -88,6 +88,12 @@ const ProductSelectSection = () => {
         }, 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProduct, selectedProduct.length])
+    const totalPv = useMemo(() => {
+        return selectedProduct.reduce((accumulator, product) => {
+            return accumulator + product.pv * product.quantity
+        }, 0)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedProduct, selectedProduct.length])
 
     return (
         <>
@@ -95,14 +101,34 @@ const ProductSelectSection = () => {
                 <h4 className="mb-6">Select products</h4>
                 <div className="flex items-center gap-2">
                     <AutoComplete
-                        data={productOption}
+                        data={productList}
                         optionKey={(product) => product.name}
                         value={inputValue}
                         renderOption={(option) => (
-                            <div className="flex items-center gap-2">
-                                <Avatar shape="round" src={option.img_url} />
-                                <span>{option.name}</span>
-                            </div>
+                            // <div className="flex items-center gap-2">
+                            //     <Avatar shape="round" src={option.img_url} />
+                            //     <span>{option.name}</span>
+                            // </div>
+                            <>
+                                <div className="flex items-center gap-2">
+                                    <Avatar
+                                        shape="round"
+                                        src={option.img_url}
+                                    />
+                                    <div>
+                                        <p className="heading-text font-bold">
+                                            {option.name}
+                                        </p>
+                                        <p>PV: {option.pv}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    Stock: 
+                                    <span className="heading-text font-bold">
+                                        {option.balance}
+                                    </span>
+                                </div>
+                            </>
                         )}
                         suffix={<TbSearch className="text-lg" />}
                         placeholder="Search product"
@@ -123,6 +149,7 @@ const ProductSelectSection = () => {
                             <Th className="w-[70%]">Product</Th>
                             <Th>Price</Th>
                             <Th>Quantity</Th>
+                            <Th>Total</Th>
                         </Tr>
                     </THead>
                     <TBody>
@@ -146,15 +173,12 @@ const ProductSelectSection = () => {
                                         </div>
                                     </Td>
                                     <Td>
-                                        <div className="heading-text font-bold">
+                                        <div className="flex items-center gap-2">
                                             <NumericFormat
                                                 fixedDecimalScale
                                                 prefix="₹"
                                                 displayType="text"
-                                                value={
-                                                    product.amount *
-                                                    product.quantity
-                                                }
+                                                value={product.amount}
                                                 decimalScale={2}
                                                 thousandSeparator={true}
                                             />
@@ -187,20 +211,46 @@ const ProductSelectSection = () => {
                                             />
                                         </div>
                                     </Td>
+                                    <Td>
+                                        <div className="heading-text font-bold">
+                                            <NumericFormat
+                                                fixedDecimalScale
+                                                prefix="₹"
+                                                displayType="text"
+                                                value={
+                                                    product.amount *
+                                                    product.quantity
+                                                }
+                                                decimalScale={2}
+                                                thousandSeparator={true}
+                                            />
+                                        </div>
+                                    </Td>
                                 </Tr>
                             ))
                         ) : (
                             <Tr>
-                                <Td className="text-center" colSpan={3}>
+                                <Td className="text-center" colSpan={4}>
                                     No product selected!
                                 </Td>
                             </Tr>
                         )}
                     </TBody>
                 </Table>
-                <div className="mt-8 flex justify-end">
+                <div className="mt-8 flex justify-between">
                     <span className="text-base flex items-center gap-2">
-                        <span className="font-semibold">Total: </span>
+                        <span className="font-semibold">Total PV: </span>
+                        <span className="text-lg font-bold heading-text">
+                            <NumericFormat
+                                fixedDecimalScale
+                                displayType="text"
+                                value={totalPv}
+                                decimalScale={2}
+                            />
+                        </span>
+                    </span>
+                    <span className="text-base flex items-center gap-2">
+                        <span className="font-semibold">Grand Total: </span>
                         <span className="text-lg font-bold heading-text">
                             <NumericFormat
                                 fixedDecimalScale

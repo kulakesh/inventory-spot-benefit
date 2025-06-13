@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
@@ -7,6 +7,7 @@ import { useOrderFormStore } from './store/orderFormStore'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/auth'
 import ApiService from '@/services/ApiService'
+import Loading from '@/components/shared/Loading'
 
 async function apiGetData(id){
     return ApiService.fetchDataWithAxios({
@@ -16,9 +17,11 @@ async function apiGetData(id){
 }
 
 const OrderForm = (props) => {
+    const [loading, setLoading] = useState(true);
+    const [apierror, setApiError] = useState(null);
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
 
-    const { setProductOption, setProductList, setSelectedProduct } =
+    const { setProductList, setSelectedProduct } =
         useOrderFormStore()
 
     const { user } = useAuth()
@@ -26,12 +29,10 @@ const OrderForm = (props) => {
     useEffect(() => {
         apiGetData(user.id).then((resp) => {
             setProductList(resp)
-            setProductOption(resp)
         }).catch((error) => {
-            console.log('Error fetching product data:', error);
-            // setError(error);
+            setApiError(e?.response?.data || e.toString());
         }).finally(() => {
-            // setLoading(false);
+            setLoading(false);
         })
     }, []);
 
@@ -62,7 +63,9 @@ const OrderForm = (props) => {
     } = useForm()
 
     return (
+        
         <div className="flex">
+            {loading ? <Loading loading={true} /> :
             <Form
                 className="flex-1 flex flex-col overflow-hidden"
                 onSubmit={handleSubmit(onSubmit)}
@@ -76,6 +79,7 @@ const OrderForm = (props) => {
                 </Container>
                 <BottomStickyBar>{children}</BottomStickyBar>
             </Form>
+            }
         </div>
     )
 }
