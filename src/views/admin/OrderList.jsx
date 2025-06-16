@@ -6,8 +6,8 @@ import Select from '@/components/ui/Select'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
-import { useNavigate } from 'react-router'
-import { HiOutlinePencil, HiOutlineTrash, HiViewList, HiOutlineEye } from 'react-icons/hi'
+import { useParams, useNavigate } from 'react-router'
+import { HiOutlinePencil, HiOutlineTrash, HiCheck, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
     getCoreRowModel,
@@ -16,7 +16,6 @@ import {
     getSortedRowModel,
 } from '@tanstack/react-table'
 import ApiService from '@/services/ApiService'
-import { useAuth } from '@/auth'
 import Badge from '@/components/ui/Badge'
 import Avatar from '@/components/ui/Avatar'
 import Dialog from '@/components/ui/Dialog'
@@ -24,12 +23,14 @@ import ScrollBar from '@/components/ui/ScrollBar'
 import classNames from '@/utils/classNames'
 import dayjs from 'dayjs'
 import Tooltip from '@/components/ui/Tooltip'
+import ConfirmDialog from '@/components/shared/ConfirmDialog'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-async function apiGetData(id){
+async function apiGetData(history){
+    const url = history ? `/get-order-history` : `/get-order-list`
     return ApiService.fetchDataWithAxios({
-        url: `/get-order-list/${id}`,
+        url: url,
         method: 'get',
     })
 }
@@ -56,20 +57,22 @@ const status = [
     />, 
 ]
 const PaginationTable = () => {
+    const { history } = useParams()
     const navigate = useNavigate()
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [items, setItems] = useState([])
     const [productsDialogOpen, setProductsDialogOpen] = useState(false)
-
-    const { user } = useAuth()
+    const [showOrderConfirmationDialog, setShowOrderConfirmationDialog] = useState(false)
+    const [conformationID, setConformationID] = useState(null)
+    const [isSubmiting, setIsSubmiting] = useState(false)
 
     useEffect(() => {
-        apiGetData(user.id).then((response) => {
+        apiGetData(history).then((response) => {
             setData(response)
-        }).catch((error) => {
-            setError(error);
+        }).catch((e) => {
+            setError(e?.response?.data?.message || e.toString());
         }).finally(() => {
             setLoading(false);
         })
@@ -106,8 +109,47 @@ const PaginationTable = () => {
         setItems(value)
         setProductsDialogOpen(true)
     }
+
+    const handleOrderConfirmation = () => {
+        if(!conformationID) return
+        setIsSubmiting(true)
+        ApiService.fetchDataWithAxios({
+            url: `/confirm-order/${conformationID}`,
+            method: 'get',
+        })
+        .then((response) => {
+            if(response) {
+                setShowOrderConfirmationDialog(false)
+                setConformationID(null)
+                setData((prevData) => prevData.map((item) => {
+                    if(item.id === conformationID) {
+                        return { ...item, status: 2 } // 2 is the status for 'Complete'
+                    }
+                    return item
+                }))
+            }
+        })
+        .catch((error) => {
+            console.error('Error confirming order:', error);
+        }).finally(() => {
+            setIsSubmiting(false)
+        })
+
+        hideOrderConfirmationDialog()
+    }
+
+    const popupOrderConformationDialog = (id) => {
+        setShowOrderConfirmationDialog(true)
+        setConformationID(id)
+    }
+
+    const hideOrderConfirmationDialog = () => {
+        setShowOrderConfirmationDialog(false)
+        setConformationID(null)
+    }
+
     if (error) {
-        return <div>Error: {error.message}</div>
+        return <div>{error.message}</div>
     }
     return (
         <div>
@@ -116,18 +158,21 @@ const PaginationTable = () => {
                 <THead>
                     <Tr>
                         <Th>Sl No</Th>
+                        <Th>ID</Th>
+                        <Th>Username</Th>
+                        <Th>Name</Th>
                         <Th>Amount</Th>
                         <Th>Status</Th>
                         <Th>Items</Th>
                         <Th>Date</Th>
-                        <Th>Action</Th>
+                        {history ? null : <Th>Action</Th>}
                     </Tr>
                 </THead>
                 {loading ?
                     <TableRowSkeleton
-                    columns={6}
+                    columns={9}
                     rows={10}
-                    avatarInColumns={[2, 3, 5]}
+                    avatarInColumns={[5, 6, 8]}
                     avatarProps={{ width: 28, height: 28 }}
                     />
                 :
@@ -136,6 +181,9 @@ const PaginationTable = () => {
                         return (
                             <Tr key={row.original.id}>
                                 <Td>{row.index + 1}</Td>
+                                <Td>{row.original.user?.id}</Td>
+                                <Td>{row.original.user?.username}</Td>
+                                <Td>{row.original.user?.name}</Td>
                                 <Td>{row.original.amount}</Td>
                                 <Td>{status[row.original.status]}</Td>
                                 <Td>
@@ -148,9 +196,19 @@ const PaginationTable = () => {
                                     </div>
                                 </Td>
                                 <Td>{dayjs.unix(row.original.created_at).format('D MMM, YYYY h:mm a')}</Td>
+                                {history ? null : 
                                 <Td>
+                                    <div className="flex justify-end text-lg gap-1">
+                                    <Button 
+                                        onClick={() => popupOrderConformationDialog(row.original.id)} 
+                                        icon={<HiCheck />} 
+                                        loading={isSubmiting}
+                                        variant="solid" 
+                                        size="xs"/>
                                     <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
+                                    </div>
                                 </Td>
+                                }
                             </Tr>
                         )
                     })}
@@ -233,6 +291,19 @@ const PaginationTable = () => {
                     Close
                 </Button>
             </Dialog>
+            <ConfirmDialog
+                isOpen={showOrderConfirmationDialog}
+                title="Order Confirmation"
+                onClose={hideOrderConfirmationDialog}
+                onRequestClose={hideOrderConfirmationDialog}
+                onCancel={hideOrderConfirmationDialog}
+                onConfirm={handleOrderConfirmation}
+            >
+                <p>
+                    Are you sure you want confirm this? This action can&apos;t
+                    be undo.{' '}
+                </p>
+            </ConfirmDialog>
         </div>
     )
 }

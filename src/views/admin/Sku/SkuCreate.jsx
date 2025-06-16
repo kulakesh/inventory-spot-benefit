@@ -93,8 +93,6 @@ const Sku = () => {
     const [message, setMessage] = useTimeOutMessage()
 
     const onSubmit = async (values) => {
-        console.log('values', values)
-        // return
         try{
             if (id) {
                 values.id = id
@@ -123,7 +121,7 @@ const Sku = () => {
         }
     }
     if (apierror) {
-        return <div>Error: {apierror.message}</div>
+        return <div>{apierror.message}</div>
     }
     return (
         <>

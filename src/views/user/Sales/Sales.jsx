@@ -4,30 +4,31 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import OrderForm from './OrderForm'
+import SalesForm from './SalesForm'
 import { useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 import { useOrderFormStore } from './store/orderFormStore'
 import { useAuth } from '@/auth'
 import ApiService from '@/services/ApiService'
+import { set } from 'lodash'
 
 async function pushData(data) {
     return ApiService.fetchDataWithAxios({
-        url: '/create-order',
+        url: '/create-sales',
         method: 'post',
         data,
     })
 }
-const PurchaseOrder = () => {
+const Sales = () => {
     const navigate = useNavigate()
     const { user } = useAuth()
     const { setSelectedProduct, selectedProduct } = useOrderFormStore()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
+    const [formRefresh, setFormRefresh] = useState(true)
 
     const handleFormSubmit = async (values) => {
-        
         setIsSubmiting(true)
         const orderData = selectedProduct.map(
             ({ id, quantity }) => ({ id, quantity }),
@@ -44,6 +45,7 @@ const PurchaseOrder = () => {
         }
         const orderDetails = {
             id: user.id,
+            buyer: values,
             products: orderData,
         }
         
@@ -55,6 +57,7 @@ const PurchaseOrder = () => {
                     { placement: 'top-center' },
                 )
                 setSelectedProduct([])
+                setFormRefresh((prev) => !prev)
             }
         }catch (e) {
             toast.push(
@@ -88,7 +91,7 @@ const PurchaseOrder = () => {
 
     return (
         <>
-            <OrderForm onFormSubmit={handleFormSubmit}>
+            <SalesForm onFormSubmit={handleFormSubmit} refresh={formRefresh}>
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <span></span>
@@ -114,7 +117,7 @@ const PurchaseOrder = () => {
                         </div>
                     </div>
                 </Container>
-            </OrderForm>
+            </SalesForm>
             <ConfirmDialog
                 isOpen={discardConfirmationOpen}
                 type="danger"
@@ -133,4 +136,4 @@ const PurchaseOrder = () => {
     )
 }
 
-export default PurchaseOrder
+export default Sales

@@ -41,6 +41,19 @@ const userRoute = [
             },
         },
     },
+    {
+        key: `${USER}:sales:create`,
+        path: `${USER}/sales/create`,
+        component: lazy(() => import('@/views/user/Sales')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Sales Create',
+            },
+        },
+    },
     
 ]
 

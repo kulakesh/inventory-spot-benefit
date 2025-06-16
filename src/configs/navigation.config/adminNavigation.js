@@ -47,6 +47,37 @@ const adminConfig = [
             },
         ],
     },
+    {
+        key: 'admin.purchase-order', 
+        path: '',
+        title: 'Purchase Orders',
+        translateKey: 'nav.collapseMenu.collapseMenu',
+        icon: 'purchaseorder',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [ADMIN],
+        subMenu: [
+            {
+                key: 'admin.purchase-order.list', 
+                path: 'admin/purchase-order/list',
+                title: 'List',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                subMenu: [],
+            },
+            {
+                key: 'admin.purchase-order.history', 
+                path: 'admin/purchase-order/history',
+                title: 'History',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [ADMIN],
+                subMenu: [],
+            },
+        ],
+    },
 ]
 
 export default adminConfig
