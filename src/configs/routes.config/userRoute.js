@@ -29,15 +29,15 @@ const userRoute = [
         },
     },
     {
-        key: `${USER}:purchase-order:list`,
-        path: `${USER}/purchase-order/list`,
-        component: lazy(() => import('@/views/user/PurchaseOrder/OrderList')),
+        key: `${USER}:sales:list`,
+        path: `${USER}/sales/list`,
+        component: lazy(() => import('@/views/user/Sales/SalesList')),
         authority: [USER],
         meta: {
             pageBackgroundType: 'plain',
             pageContainerType: 'contained',
             header: {
-                title: 'Purchase Order List',
+                title: 'Sales List',
             },
         },
     },

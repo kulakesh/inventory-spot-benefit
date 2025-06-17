@@ -68,8 +68,8 @@ const PaginationTable = () => {
     useEffect(() => {
         apiGetData(user.id).then((response) => {
             setData(response)
-        }).catch((error) => {
-            setError(error);
+        }).catch((e) => {
+            setError(e?.response?.data || e.toString());
         }).finally(() => {
             setLoading(false);
         })
@@ -107,7 +107,7 @@ const PaginationTable = () => {
         setProductsDialogOpen(true)
     }
     if (error) {
-        return <div>Error: {error.message}</div>
+        return <div>{error.message}</div>
     }
     return (
         <div>

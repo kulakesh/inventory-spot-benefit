@@ -44,7 +44,9 @@ const ProductSelectSection = () => {
         setSelectedProduct(
             selectedProduct.map((product) => {
                 if (product.id === productToIncrease.id) {
-                    product.quantity = product.quantity + 1
+                    if(productToIncrease.balance > product.quantity) {
+                        product.quantity = product.quantity + 1
+                    }
                 }
                 return product
             }),
@@ -285,19 +287,26 @@ const ProductSelectSection = () => {
                                 >
                                     <div className="flex items-center gap-2">
                                         <div className="px-1">
-                                            <Checkbox
-                                                checked={selectedProduct.some(
-                                                    (selected) =>
-                                                        selected.id ===
-                                                        product.id,
-                                                )}
-                                                onChange={(value) =>
-                                                    handleProductChecked(
-                                                        value,
-                                                        product,
-                                                    )
-                                                }
-                                            />
+                                            {product.balance > 0 ? 
+                                                <Checkbox
+                                                    checked={selectedProduct.some(
+                                                        (selected) =>
+                                                            selected.id ===
+                                                            product.id,
+                                                    )}
+                                                    onChange={(value) =>
+                                                        handleProductChecked(
+                                                            value,
+                                                            product,
+                                                        )
+                                                    }
+                                                />
+                                            : 
+                                                <Checkbox
+                                                    disabled
+                                                    checked={false}
+                                                />
+                                            }
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Avatar

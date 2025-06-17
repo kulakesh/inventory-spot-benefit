@@ -58,7 +58,7 @@ const userConfig = [
         subMenu: [
             {
                 key: `${USER}:sales:list`,
-                path: ``,
+                path: `${USER}/sales/list`,
                 title: 'List',
                 translateKey: 'nav.collapseMenu.item1',
                 icon: '',

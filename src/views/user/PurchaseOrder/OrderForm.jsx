@@ -29,7 +29,7 @@ const OrderForm = (props) => {
     useEffect(() => {
         apiGetData(user.id).then((resp) => {
             setProductList(resp)
-        }).catch((error) => {
+        }).catch((e) => {
             setApiError(e?.response?.data || e.toString());
         }).finally(() => {
             setLoading(false);

@@ -22,7 +22,7 @@ async function pushData(data) {
 const Sales = () => {
     const navigate = useNavigate()
     const { user } = useAuth()
-    const { setSelectedProduct, selectedProduct } = useOrderFormStore()
+    const { setSelectedProduct, selectedProduct, setProductList, productList } = useOrderFormStore()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false)
     const [isSubmiting, setIsSubmiting] = useState(false)
@@ -55,6 +55,15 @@ const Sales = () => {
                 toast.push(
                     <Notification type="success">Order Placed!</Notification>,
                     { placement: 'top-center' },
+                )
+                setProductList(
+                    productList.map((item) => {
+                        const product = selectedProduct.find((p) => p.id === item.id)
+                        if (product) {
+                            item.balance = item.balance - product.quantity
+                        }
+                        return item
+                    })
                 )
                 setSelectedProduct([])
                 setFormRefresh((prev) => !prev)

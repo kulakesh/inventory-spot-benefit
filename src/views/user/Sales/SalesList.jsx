@@ -29,7 +29,7 @@ const { Tr, Th, Td, THead, TBody } = Table
 
 async function apiGetData(id){
     return ApiService.fetchDataWithAxios({
-        url: `/get-order-list/${id}`,
+        url: `/get-sales-list/${id}`,
         method: 'get',
     })
 }
@@ -42,19 +42,6 @@ const pageSizeOption = [
     { value: 50, label: '50 / page' },
 ]
 
-const status = [
-    <Badge
-        className="mr-4"
-        content={'Pending'}
-        innerClass="bg-white text-gray-500"
-    />, 
-    'Deleted', 
-    <Badge
-        className="mr-4"
-        content={'Complete'}
-        innerClass="bg-emerald-500"
-    />, 
-]
 const PaginationTable = () => {
     const navigate = useNavigate()
     const [data, setData] = useState([])
@@ -68,8 +55,8 @@ const PaginationTable = () => {
     useEffect(() => {
         apiGetData(user.id).then((response) => {
             setData(response)
-        }).catch((error) => {
-            setError(error);
+        }).catch((e) => {
+            setError(e?.response?.data || e.toString());
         }).finally(() => {
             setLoading(false);
         })
@@ -107,7 +94,7 @@ const PaginationTable = () => {
         setProductsDialogOpen(true)
     }
     if (error) {
-        return <div>Error: {error.message}</div>
+        return <div>{error.message}</div>
     }
     return (
         <div>
@@ -116,11 +103,12 @@ const PaginationTable = () => {
                 <THead>
                     <Tr>
                         <Th>Sl No</Th>
+                        <Th>Name</Th>
+                        <Th>Phone</Th>
+                        <Th>City</Th>
                         <Th>Amount</Th>
-                        <Th>Status</Th>
                         <Th>Items</Th>
                         <Th>Date</Th>
-                        <Th>Action</Th>
                     </Tr>
                 </THead>
                 {loading ?
@@ -136,8 +124,10 @@ const PaginationTable = () => {
                         return (
                             <Tr key={row.original.id}>
                                 <Td>{row.index + 1}</Td>
+                                <Td>{row.original.name}</Td>
+                                <Td>{row.original.phone}</Td>
+                                <Td>{row.original.city}</Td>
                                 <Td>{row.original.amount}</Td>
-                                <Td>{status[row.original.status]}</Td>
                                 <Td>
                                     <div className="flex items-center">
                                         <Badge className="mr-2" innerClass="bg-blue-500" content={row.original.items.length}>
@@ -148,9 +138,6 @@ const PaginationTable = () => {
                                     </div>
                                 </Td>
                                 <Td>{dayjs.unix(row.original.created_at).format('D MMM, YYYY h:mm a')}</Td>
-                                <Td>
-                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
-                                </Td>
                             </Tr>
                         )
                     })}

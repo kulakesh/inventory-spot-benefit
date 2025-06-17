@@ -29,8 +29,7 @@ const baseValidationSchema = z.object({
     phone: z
         .string()
         .min(1, { message: 'Please input your mobile number' }).nullish(),
-    address: z.string().min(1, { message: 'Please select a country' }).nullish(),
-    city: z.string().min(1, { message: 'Addrress required' }).nullish(),
+    address: z.string().min(1, { message: 'Addrress required' }).nullish(),
     pin: z.string().min(1, { message: 'Postcode required' }).nullish(),
     city: z.string().min(1, { message: 'City required' }).nullish(),
     paymentMethod: z.string().min(1, { message: 'Payment Method required' }),
@@ -48,7 +47,7 @@ const SalesForm = (props) => {
     useEffect(() => {
         apiGetData(user.id).then((resp) => {
             setProductList(resp)
-        }).catch((error) => {
+        }).catch((e) => {
             setApiError(e?.response?.data || e.toString());
         }).finally(() => {
             setLoading(false);
