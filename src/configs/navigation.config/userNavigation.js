@@ -76,6 +76,16 @@ const userConfig = [
                 authority: [USER],
                 subMenu: [],
             },
+            {
+                key: `${USER}:signInAdmin`,
+                path: `${USER}/invoice`,
+                title: 'Invoice',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [USER],
+                subMenu: [],
+            },
         ],
     },
     

@@ -7,7 +7,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
 import { useNavigate } from 'react-router'
-import { HiOutlinePencil, HiOutlineTrash, HiViewList, HiOutlineEye } from 'react-icons/hi'
+import { HiPrinter, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
     getCoreRowModel,
@@ -93,6 +93,11 @@ const PaginationTable = () => {
         setItems(value)
         setProductsDialogOpen(true)
     }
+    const handlePrint = (value) => {
+        navigate(`/user/invoice`, {
+            state: value,
+        })
+    }
     if (error) {
         return <div>{error.message}</div>
     }
@@ -109,6 +114,7 @@ const PaginationTable = () => {
                         <Th>Amount</Th>
                         <Th>Items</Th>
                         <Th>Date</Th>
+                        <Th>Action</Th>
                     </Tr>
                 </THead>
                 {loading ?
@@ -138,6 +144,7 @@ const PaginationTable = () => {
                                     </div>
                                 </Td>
                                 <Td>{dayjs.unix(row.original.created_at).format('D MMM, YYYY h:mm a')}</Td>
+                                <Td><Button onClick={() => handlePrint(row.original)} shape="circle" size="sm" icon={<HiPrinter />} /></Td>
                             </Tr>
                         )
                     })}

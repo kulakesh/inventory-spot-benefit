@@ -7,7 +7,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
 import { useNavigate } from 'react-router'
-import { HiOutlinePencil, HiOutlineTrash, HiViewList, HiOutlineEye } from 'react-icons/hi'
+import { HiOutlineTrash, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
     getCoreRowModel,
