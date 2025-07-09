@@ -12,17 +12,17 @@ export default defineConfig({
       '@': path.join(__dirname, 'src'),
     },
   },
-  server: {
-    proxy: {
-      '/api': {
-        // target: 'http://127.0.0.1:8000',
-        target: 'https://spotbenefit.in',
-        // changeOrigin: true,
-        secure: false,
-      },
-    },
-    allowedHosts: true
-  },
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       // target: 'http://127.0.0.1:8000',
+  //       target: 'https://spotbenefit.in',
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  //   allowedHosts: true
+  // },
   build: {
     outDir: 'build'
   }

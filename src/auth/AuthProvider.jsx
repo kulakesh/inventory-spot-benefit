@@ -61,10 +61,12 @@ function AuthProvider({ children }) {
 
     const checkAuth = async () => {
         let resp = {}
-        if(user.authority[0] === ADMIN){
-            resp = await apiAdminCheck()
-        }else if(user.authority[0] === USER){
-            resp = await apiUserCheck()
+        if(user){
+            if(user?.authority[0] === ADMIN){
+                resp = await apiAdminCheck()
+            }else if(user?.authority[0] === USER){
+                resp = await apiUserCheck()
+            }
         }
         if (resp) {
             handleSignIn({ accessToken: token }, resp.user)
@@ -85,7 +87,7 @@ function AuthProvider({ children }) {
             }else if(values.authority === USER){
                 resp = await apiUserSignIn(values)   
             }
-            if (resp) {
+            if (resp?.token) {
                 handleSignIn({ accessToken: resp.token }, resp.user)
                 redirect(values.authority)
                 return {

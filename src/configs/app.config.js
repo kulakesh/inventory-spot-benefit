@@ -1,7 +1,7 @@
 import {ADMIN, USER} from '@/constants/roles.constant'
 
 const appConfig = {
-    apiPrefix: '/api',
+    apiPrefix: 'https://spotbenefit.in/api',
     authenticatedEntryPath: {admin:'/admin/dashboard', user:'/user/dashboard'},
     unAuthenticatedEntryPath: '/user/sign-in',
     locale: 'en',
