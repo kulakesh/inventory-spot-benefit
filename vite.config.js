@@ -17,8 +17,8 @@ export default defineConfig({
       '/api': {
         // target: 'http://127.0.0.1:8000',
         target: 'https://spotbenefit.in',
-        changeOrigin: true,
-        secure: true,
+        // changeOrigin: true,
+        secure: false,
       },
     },
     allowedHosts: true
