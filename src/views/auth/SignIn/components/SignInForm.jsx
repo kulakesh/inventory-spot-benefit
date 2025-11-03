@@ -29,8 +29,8 @@ const SignInForm = (props) => {
         control,
     } = useForm({
         defaultValues: {
-            email: authority == 'user' ? 'test123' : 'web',
-            password: authority == 'user' ? '111111' : 'restore',
+            // email: authority == 'user' ? 'test123' : 'web',
+            // password: authority == 'user' ? '111111' : 'restore',
         },
         resolver: zodResolver(validationSchema),
     })
