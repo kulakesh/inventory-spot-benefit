@@ -1,13 +1,15 @@
 import { useLocation } from 'react-router'
 import Logo from '@/components/template/Logo'
 import dayjs from 'dayjs'
+import Button from '@/components/ui/Button'
 
 const Invoice = () => {
     const location = useLocation()
     const invoice = location.state
 
     let total = 0, current_total, tax = 0
-
+    console.log("Invoice>",invoice);
+    
     invoice.items.map((item) => {
         current_total = (item.quantity * item.amount) / Number(`1.${Math.round(item?.tax)}`)
         total += current_total
@@ -16,7 +18,9 @@ const Invoice = () => {
 
     invoice.tax = tax
     invoice.total = total
-
+    const handleBack = () => {
+        navigate(`/user/sales/create`)
+    }
     return (
         (invoice && Object.keys(invoice).length > 0) ? (
         <div className="w-3xl mx-auto p-6 bg-white rounded shadow-sm my-6" id="invoice">
@@ -117,6 +121,9 @@ const Invoice = () => {
 
             <div className="border-t-2 pt-4 text-xs text-gray-500 text-center mt-16 sm:w-full">
                 This is a computer-generated document and does not require a signature.
+            </div>
+            <div className="text-center mt-16 sm:w-full print:hidden">
+                <Button variant="solid" onClick={handleBack}>Back</Button>
             </div>
 
         </div>

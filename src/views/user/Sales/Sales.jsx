@@ -67,6 +67,11 @@ const Sales = () => {
                 )
                 setSelectedProduct([])
                 setFormRefresh((prev) => !prev)
+                
+                navigate(`/user/invoice`, {
+                    state: resp.invoice.original[0],
+                })
+                
             }
         }catch (e) {
             toast.push(
@@ -83,6 +88,7 @@ const Sales = () => {
     const handleConfirmDiscard = () => {
         setDiscardConfirmationOpen(false)
         setSelectedProduct([])
+        setFormRefresh((prev) => !prev)
         toast.push(
             <Notification type="success">Order discarded!</Notification>,
             { placement: 'top-center' },

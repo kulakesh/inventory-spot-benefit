@@ -21,6 +21,7 @@ async function apiGetData(id){
     })
 }
 const baseValidationSchema = z.object({
+    user_id: z.string().min(1, { message: 'User ID required' }),
     name: z.string().min(1, { message: 'Name required' }),
     email: z
         .string()
@@ -55,7 +56,9 @@ const SalesForm = (props) => {
     }, []);
     useEffect(() => {
         reset({
-            paymentMethod: 'cash'
+            paymentMethod: 'cash',
+            phone: '',
+
         })
     }, [props.refresh])
 
@@ -82,6 +85,8 @@ const SalesForm = (props) => {
         watch,
         formState: { errors },
         control,
+        setValue,
+        getValues,
     } = useForm({
         defaultValues: {
             paymentMethod: 'cash',
@@ -113,6 +118,8 @@ const SalesForm = (props) => {
                                 <CustomerDetailSection
                                     control={control}
                                     errors={errors}
+                                    setValue={setValue}
+                                    getValues={getValues}
                                 />
                                 <BillingAddressSection
                                     control={control}

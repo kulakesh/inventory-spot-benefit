@@ -90,9 +90,9 @@ const ProductSelectSection = () => {
         }, 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProduct, selectedProduct.length])
-    const totalPv = useMemo(() => {
+    const totalBv = useMemo(() => {
         return selectedProduct.reduce((accumulator, product) => {
-            return accumulator + product.pv * product.quantity
+            return accumulator + product.bv * product.quantity
         }, 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProduct, selectedProduct.length])
@@ -121,7 +121,7 @@ const ProductSelectSection = () => {
                                         <p className="heading-text font-bold">
                                             {option.name}
                                         </p>
-                                        <p>PV: {option.pv}</p>
+                                        <p>BV: {option.bv}</p>
                                     </div>
                                 </div>
                                 <div>
@@ -169,7 +169,7 @@ const ProductSelectSection = () => {
                                                     {product.name}
                                                 </div>
                                                 <div>
-                                                    PV: {product.pv}
+                                                    BV: {product.bv}
                                                 </div>
                                             </div>
                                         </div>
@@ -246,7 +246,7 @@ const ProductSelectSection = () => {
                             <NumericFormat
                                 fixedDecimalScale
                                 displayType="text"
-                                value={totalPv}
+                                value={totalBv}
                                 decimalScale={2}
                             />
                         </span>
@@ -318,7 +318,7 @@ const ProductSelectSection = () => {
                                                 <p className="heading-text font-bold">
                                                     {product.name}
                                                 </p>
-                                                <p>PV: {product.pv}</p>
+                                                <p>BV: {product.bv}</p>
                                             </div>
                                         </div>
                                     </div>
