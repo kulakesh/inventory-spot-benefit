@@ -2,13 +2,14 @@ import { useLocation } from 'react-router'
 import Logo from '@/components/template/Logo'
 import dayjs from 'dayjs'
 import Button from '@/components/ui/Button'
+import { useNavigate } from 'react-router'
 
 const Invoice = () => {
+    const navigate = useNavigate()
     const location = useLocation()
     const invoice = location.state
 
     let total = 0, current_total, tax = 0
-    console.log("Invoice>",invoice);
     
     invoice.items.map((item) => {
         current_total = (item.quantity * item.amount) / Number(`1.${Math.round(item?.tax)}`)

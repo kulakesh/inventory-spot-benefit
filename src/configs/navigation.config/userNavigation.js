@@ -77,8 +77,8 @@ const userConfig = [
                 subMenu: [],
             },
             {
-                key: `${USER}:signInAdmin`,
-                path: `${USER}/invoice`,
+                key: `${USER}:invoice2`,
+                path: `${USER}/invoice2`,
                 title: 'Invoice',
                 translateKey: 'nav.collapseMenu.item1',
                 icon: '',

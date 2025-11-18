@@ -68,9 +68,21 @@ const userRoute = [
         },
     },
     {
-        key: `${USER}:signInAdmin`,
+        key: `${USER}:invoice`,
         path: `${USER}/invoice`,
         component: lazy(() => import('@/views/user/Invoice')),
+        authority: [USER],
+        meta: {
+            layout: 'blank',
+            footer: false,
+            pageContainerType: 'gutterless',
+            pageBackgroundType: 'plain',
+        },
+    },
+    {
+        key: `${USER}:invoice2`,
+        path: `${USER}/invoice2`,
+        component: lazy(() => import('@/views/user/Invoice2')),
         authority: [USER],
         meta: {
             layout: 'blank',
