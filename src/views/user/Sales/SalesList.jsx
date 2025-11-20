@@ -94,7 +94,7 @@ const PaginationTable = () => {
         setProductsDialogOpen(true)
     }
     const handlePrint = (value) => {
-        navigate(`/user/invoice`, {
+        navigate(`/user/invoice2`, {
             state: value,
         })
     }
