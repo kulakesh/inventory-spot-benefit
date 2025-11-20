@@ -68,7 +68,7 @@ const Sales = () => {
                 setSelectedProduct([])
                 setFormRefresh((prev) => !prev)
                 
-                navigate(`/user/invoice`, {
+                navigate(`/user/invoice2`, {
                     state: resp.invoice.original[0],
                 })
                 
