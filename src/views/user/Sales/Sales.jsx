@@ -43,14 +43,17 @@ const Sales = () => {
             setIsSubmiting(false)
             return
         }
+        
         const orderDetails = {
             id: user.id,
+            sku_user_name: user.userName,
             buyer: values,
             products: orderData,
         }
         
         try{
             const resp = await pushData(orderDetails)
+            
             if (resp) {
                 toast.push(
                     <Notification type="success">Order Placed!</Notification>,

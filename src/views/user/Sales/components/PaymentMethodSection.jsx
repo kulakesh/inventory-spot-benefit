@@ -2,15 +2,9 @@ import Card from '@/components/ui/Card'
 import Select, { Option as DefaultOption } from '@/components/ui/Select'
 import { FormItem } from '@/components/ui/Form'
 import { Controller } from 'react-hook-form'
-import { TbCreditCard, TbCashBanknote, TbBuildingBank, TbQrcode } from 'react-icons/tb'
 import { components } from 'react-select'
 
-const paymentMethodOptions = [
-    { label: 'Cash', value: 'cash', icon: <TbCashBanknote /> },
-    { label: 'Credit/Debit card', value: 'creditOrDebitCard', icon: <TbCreditCard /> },
-    { label: 'UPI', value: 'upi', icon: <TbQrcode /> },
-    { label: 'Bank transfer', value: 'bankTransfer', icon: <TbBuildingBank /> },
-]
+
 
 
 const { Control } = components
@@ -43,7 +37,8 @@ const CustomControl = ({ children, ...props }) => {
     )
 }
 
-const PaymentMethodSection = ({ control, errors, selectedPaymentMethod }) => {
+const PaymentMethodSection = ({ control, errors, selectedPaymentMethod, paymentMethodOptions }) => {
+    
     return (
         <Card id="payment">
             <h4 className="mb-6">Payment</h4>

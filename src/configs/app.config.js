@@ -1,5 +1,4 @@
 import {ADMIN, USER} from '@/constants/roles.constant'
-console.log('import.meta.env.VITE_APP_API_URL:', import.meta.env.VITE_APP_API_URL);
 
 const appConfig = {
     // apiPrefix: 'https://spotbenefit.in/api',

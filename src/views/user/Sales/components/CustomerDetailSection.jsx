@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import Avatar from '@/components/ui/Avatar'
 import { FormItem } from '@/components/ui/Form'
 import NumericInput from '@/components/shared/NumericInput'
+import { TbCreditCard, TbCashBanknote, TbWallet, TbQrcode } from 'react-icons/tb'
 import { countryList } from '@/constants/countries.constant'
 import { Controller } from 'react-hook-form'
 import ApiService from '@/services/ApiService'
@@ -19,7 +20,7 @@ async function searchUserID(id) {
         method: 'get',
     })
 }
-const CustomerDetailSection = ({ control, errors, setValue, getValues }) => {
+const CustomerDetailSection = ({ control, errors, setpaymentMethodOptions, setValue, getValues }) => {
     const handleSearchUserID = async () => {
         const userID = getValues('user_id')
         try{
@@ -32,6 +33,14 @@ const CustomerDetailSection = ({ control, errors, setValue, getValues }) => {
                 setValue('pin', resp.pin);
                 setValue('city', resp.city);
                 setValue('member_id', resp.id);
+                setpaymentMethodOptions([
+                    { label: 'Cash', value: 'cash', icon: <TbCashBanknote /> },
+                    { label: 'Credit/Debit card', value: 'creditOrDebitCard', icon: <TbCreditCard /> },
+                    { label: 'UPI', value: 'upi', icon: <TbQrcode /> },
+                    { label: 'Digital: ' + Math.round(resp.digital, 2), value: 'digital', icon: <TbWallet /> },
+                    { label: 'Principal: ' + Math.round(resp.principal, 2), value: 'principal', icon: <TbWallet /> },
+                    { label: 'Franchisee: ' + Math.round(resp.franchisee, 2), value: 'franchisee', icon: <TbWallet /> },
+                ])
             }
         }catch (e) {
             toast.push(

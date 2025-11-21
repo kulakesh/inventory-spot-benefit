@@ -6,6 +6,7 @@ import ProductSelectSection from './components/ProductSelectSection'
 import CustomerDetailSection from './components/CustomerDetailSection'
 import BillingAddressSection from './components/BillingAddressSection'
 import PaymentMethodSection from './components/PaymentMethodSection'
+import { TbCreditCard, TbCashBanknote, TbWallet, TbQrcode } from 'react-icons/tb'
 import { useOrderFormStore } from './store/orderFormStore'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/auth'
@@ -20,6 +21,8 @@ async function apiGetData(id){
         method: 'get',
     })
 }
+
+
 const baseValidationSchema = z.object({
     user_id: z.string().min(1, { message: 'User ID required' }),
     name: z.string().min(1, { message: 'Name required' }),
@@ -39,7 +42,12 @@ const SalesForm = (props) => {
     const [loading, setLoading] = useState(true);
     const [apierror, setApiError] = useState(null);
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
-
+    const [paymentMethodOptions, setpaymentMethodOptions] = useState([
+        { label: 'Cash', value: 'cash', icon: <TbCashBanknote /> },
+        { label: 'Credit/Debit card', value: 'creditOrDebitCard', icon: <TbCreditCard /> },
+        { label: 'UPI', value: 'upi', icon: <TbQrcode /> },
+    ]);
+    
     const { setProductList, setSelectedProduct } =
         useOrderFormStore()
 
@@ -114,10 +122,11 @@ const SalesForm = (props) => {
                         <div className="flex flex-col gap-4">
                             <ProductSelectSection />
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-30">
                                 <CustomerDetailSection
                                     control={control}
                                     errors={errors}
+                                    setpaymentMethodOptions={setpaymentMethodOptions}
                                     setValue={setValue}
                                     getValues={getValues}
                                 />
@@ -128,6 +137,7 @@ const SalesForm = (props) => {
                                 <PaymentMethodSection
                                     control={control}
                                     errors={errors}
+                                    paymentMethodOptions={paymentMethodOptions}
                                     selectedPaymentMethod={
                                         selectedPaymentMethod
                                     }
