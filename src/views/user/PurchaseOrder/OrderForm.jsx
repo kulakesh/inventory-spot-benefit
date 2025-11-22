@@ -53,7 +53,11 @@ const OrderForm = (props) => {
     const onSubmit = (values) => {
         onFormSubmit?.(values)
     }
-
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+        }
+    }
     const {
         handleSubmit,
         reset,
@@ -69,6 +73,7 @@ const OrderForm = (props) => {
             <Form
                 className="flex-1 flex flex-col overflow-hidden"
                 onSubmit={handleSubmit(onSubmit)}
+                onKeyDown={handleKeyDown}
             >
                 <Container>
                     <div className="flex-1">

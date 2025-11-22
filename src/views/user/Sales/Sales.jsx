@@ -29,6 +29,7 @@ const Sales = () => {
     const [formRefresh, setFormRefresh] = useState(true)
 
     const handleFormSubmit = async (values) => {
+        
         setIsSubmiting(true)
         const orderData = selectedProduct.map(
             ({ id, quantity }) => ({ id, quantity }),
