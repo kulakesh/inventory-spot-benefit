@@ -42,6 +42,19 @@ const userRoute = [
         },
     },
     {
+        key: `${USER}:myshopee-order:list`,
+        path: `${USER}/myshopee-order/list`,
+        component: lazy(() => import('@/views/user/MyshopeeOrderList')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Myshopee Orders',
+            },
+        },
+    },
+    {
         key: `${USER}:sales:list`,
         path: `${USER}/sales/list`,
         component: lazy(() => import('@/views/user/Sales/SalesList')),

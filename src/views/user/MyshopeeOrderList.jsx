@@ -24,14 +24,25 @@ import classNames from '@/utils/classNames'
 import dayjs from 'dayjs'
 import Tooltip from '@/components/ui/Tooltip'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import { useAuth } from '@/auth'
+import { TbMinus, TbPlus } from 'react-icons/tb'
+import useResponsive from '@/utils/hooks/useResponsive'
+
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-async function apiGetData(history){
-    const url = history ? `/get-order-history` : `/get-order-list`
+async function apiGetData(history, id){
+    const url = history ? `/get-order-history/` : `/sku-order-list/`  + id;
     return ApiService.fetchDataWithAxios({
         url: url,
         method: 'get',
+    })
+}
+async function apiPushData(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/create-sales',
+        method: 'post',
+        data,
     })
 }
 
@@ -68,8 +79,12 @@ const PaginationTable = () => {
     const [conformationID, setConformationID] = useState(null)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
+    const { user } = useAuth()
+
+    const { smaller } = useResponsive()
+
     useEffect(() => {
-        apiGetData(history).then((response) => {
+        apiGetData(history, user.id).then((response) => {
             setData(response)
         }).catch((e) => {
             setError(e?.response?.data?.message || e.toString());
@@ -82,7 +97,41 @@ const PaginationTable = () => {
     //     if(items.length)
     //         setProductsDialogOpen(true)
     // }, [items]);
-
+    const handleProductIncremental = (product) => {
+        const newData = data.map((item) => {
+            if(item.id === product.order_id) {
+                item.items.map((p) => {
+                    if(p.id === product.id) {
+                        const totalIssue = p.issue ? p.issue + 1 : 1
+                        if(totalIssue <= p.quantity - p.issued && totalIssue <= p.balance) {
+                            p.issue = totalIssue
+                        }
+                    }
+                    return p
+                })
+            }
+            return item
+        })
+        setData(newData)
+    }
+    const handleProductDecremental = (product) => {
+        const newData = data.map((item) => {
+            if(item.id === product.order_id) {
+                item.items.map((p) => {
+                    if(p.id === product.id) {
+                        const totalIssue = p.issue ? p.issue - 1 : 0
+                        if(totalIssue >= 0) {
+                            p.issue = totalIssue
+                        }
+                    }
+                    return p
+                })
+            }
+            return item
+        })
+        setData(newData)
+    }
+    
     const totalData = data.length
 
     const table = useReactTable({
@@ -93,10 +142,6 @@ const PaginationTable = () => {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
     })
-    
-    const handleEdit = (row) => {
-        navigate(`/admin/sku/edit/${row.original.id}`)
-    }
 
     const onPaginationChange = (page) => {
         table.setPageIndex(page - 1)
@@ -113,20 +158,33 @@ const PaginationTable = () => {
     const handleOrderConfirmation = () => {
         if(!conformationID) return
         setIsSubmiting(true)
+        data.map((item) => {
+            if(item.id === conformationID) {
+                const orderData = item.items.map(
+                    ({ id, issue }) => ({ id, issue }),
+                )
+            }
+        })
+        const orderDetails = {
+            order_id: conformationID,
+            products: orderData,
+        }
+
         ApiService.fetchDataWithAxios({
-            url: `/confirm-order/${conformationID}`,
-            method: 'get',
+            url: '/create-sales',
+            method: 'post',
+            orderDetails,
         })
         .then((response) => {
             if(response) {
                 setShowOrderConfirmationDialog(false)
                 setConformationID(null)
-                setData((prevData) => prevData.map((item) => {
-                    if(item.id === conformationID) {
-                        return { ...item, status: 2 } // 2 is the status for 'Complete'
+                const resData = data.map((item) => {
+                    if(item.id === product.conformationID) {
+                        return {...item, response}
                     }
-                    return item
-                }))
+                })
+                setData(resData)
             }
         })
         .catch((error) => {
@@ -149,7 +207,7 @@ const PaginationTable = () => {
     }
 
     if (error) {
-        return <div>{error || error.message}</div>
+        return <div>{error || error?.message}</div>
     }
     return (
         <div>
@@ -158,8 +216,7 @@ const PaginationTable = () => {
                 <THead>
                     <Tr>
                         <Th>Sl No</Th>
-                        <Th>ID</Th>
-                        <Th>Username</Th>
+                        <Th>User ID</Th>
                         <Th>Name</Th>
                         <Th>Amount</Th>
                         <Th>Status</Th>
@@ -181,8 +238,7 @@ const PaginationTable = () => {
                         return (
                             <Tr key={row.original.id}>
                                 <Td>{row.index + 1}</Td>
-                                <Td>{row.original.user?.id}</Td>
-                                <Td>{row.original.user?.username}</Td>
+                                <Td>{row.original.user?.user_id}</Td>
                                 <Td>{row.original.user?.name}</Td>
                                 <Td>{row.original.amount}</Td>
                                 <Td>{status[row.original.status]}</Td>
@@ -199,12 +255,6 @@ const PaginationTable = () => {
                                 {history ? null : 
                                 <Td>
                                     <div className="flex justify-end text-lg gap-1">
-                                    <Button 
-                                        onClick={() => popupOrderConformationDialog(row.original.id)} 
-                                        icon={<HiCheck />} 
-                                        loading={isSubmiting}
-                                        variant="solid" 
-                                        size="xs"/>
                                     <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
                                     </div>
                                 </Td>
@@ -242,6 +292,7 @@ const PaginationTable = () => {
                 isOpen={productsDialogOpen}
                 onClose={() => setProductsDialogOpen(false)}
                 onRequestClose={() => setProductsDialogOpen(false)}
+                width={850}
             >
                 <div className="text-center mb-6">
                     <h4 className="mb-1">Ordered items</h4>
@@ -249,36 +300,79 @@ const PaginationTable = () => {
                 <div className="mt-4">
                     <div className="mb-6">
                         <ScrollBar
-                            className={classNames('overflow-y-auto h-80')}
+                            className={classNames('overflow-y-auto h-120')}
                         >
-                            {items?.map((product) => (
-                                <div
-                                    key={product.id}
-                                    className="py-3 pr-5 rounded-lg flex items-center justify-between"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-2">
-                                            <Avatar
-                                                size="lg"
-                                                shape="round"
-                                                src={product.img_url}
-                                            />
-                                            <div>
-                                                <p className="heading-text font-bold">
-                                                    {product.name}
-                                                </p>
-                                                <p>Price: ₹{product.amount}</p>
+                            <Table compact={smaller.sm} className="mt-6">
+                            <THead>
+                                <Tr>
+                                    <Th className="w-[40%]">Product</Th>
+                                    <Th className="w-[20%]">Price</Th>
+                                    <Th className="w-[10%]">Request Qnty</Th>
+                                    <Th className="w-[10%]">Issued Qnty</Th>
+                                    <Th className="w-[10%]">Stock </Th>
+                                    <Th className="w-[10%]">Issue</Th>
+                                </Tr>
+                            </THead>
+                            <TBody>
+                                {items?.map((product) => (
+                                    <Tr key={product.id}>
+                                        <Td>
+                                            <div className="flex items-center gap-2">
+                                                <Avatar
+                                                    size="md"
+                                                    shape="round"
+                                                    src={product.img_url}
+                                                />
+                                                <span>{product.name}</span>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        Qnt:
-                                        <span className="heading-text font-bold">
-                                            {product.quantity}
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
+                                        </Td>
+                                        <Td>₹{product.amount}</Td>
+                                        <Td>{product.quantity}</Td>
+                                        <Td>{product.issued}</Td>
+                                        <Td>
+                                            {
+                                                product.balance < product.quantity 
+                                                ? <Badge
+                                                    content={product.balance}
+                                                    innerClass="bg-red-500"
+                                                />
+                                                : <Badge
+                                                    content={product.balance}
+                                                    innerClass="bg-green-500"
+                                                />
+                                            }
+                                        </Td>
+                                        <Td>
+                                            <div className="flex items-center">
+                                                <Button
+                                                    type="button"
+                                                    icon={<TbMinus />}
+                                                    size="xs"
+                                                    onClick={() =>
+                                                        handleProductDecremental(
+                                                            product,
+                                                        )
+                                                    }
+                                                />
+                                                <div className="w-10 text-center">
+                                                    <span>{product.issue}</span>
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    icon={<TbPlus />}
+                                                    size="xs"
+                                                    onClick={() =>
+                                                        handleProductIncremental(
+                                                            product,
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </TBody>
+                            </Table>
                         </ScrollBar>
                     </div>
                 </div>
@@ -286,9 +380,11 @@ const PaginationTable = () => {
                     block
                     type="button"
                     variant="solid"
-                    onClick={() => setProductsDialogOpen(false)}
+                    // onClick={() => setProductsDialogOpen(false)}
+                    onClick={() => popupOrderConformationDialog(items[0].order_id)} 
+                    loading={isSubmiting}
                 >
-                    Close
+                    ISSUE
                 </Button>
             </Dialog>
             <ConfirmDialog

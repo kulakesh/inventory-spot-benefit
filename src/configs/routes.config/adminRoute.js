@@ -61,7 +61,7 @@ const adminRoute = [
         authority: [ADMIN],
         meta: {
             header: {
-                title: 'Edit SKU',
+                title: 'SKU Orders',
             },
             contained: true,
             footer: false,
@@ -74,7 +74,7 @@ const adminRoute = [
         authority: [ADMIN],
         meta: {
             header: {
-                title: 'Edit SKU',
+                title: 'SKU Orders History',
             },
             contained: true,
             footer: false,
