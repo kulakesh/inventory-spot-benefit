@@ -27,6 +27,8 @@ import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import { useAuth } from '@/auth'
 import { TbMinus, TbPlus } from 'react-icons/tb'
 import useResponsive from '@/utils/hooks/useResponsive'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 
 const { Tr, Th, Td, THead, TBody } = Table
@@ -36,6 +38,13 @@ async function apiGetData(history, id){
     return ApiService.fetchDataWithAxios({
         url: url,
         method: 'get',
+    })
+}
+async function pushData(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/sku-order-confirm',
+        method: 'post',
+        data,
     })
 }
 async function apiPushData(data) {
@@ -78,25 +87,27 @@ const PaginationTable = () => {
     const [showOrderConfirmationDialog, setShowOrderConfirmationDialog] = useState(false)
     const [conformationID, setConformationID] = useState(null)
     const [isSubmiting, setIsSubmiting] = useState(false)
+    const [orderConfirmWhistle, setOrderConfirmWhistle] = useState(false)
+
 
     const { user } = useAuth()
 
     const { smaller } = useResponsive()
 
     useEffect(() => {
+        initialData()
+    }, [])
+
+    const initialData = () => {
         apiGetData(history, user.id).then((response) => {
             setData(response)
+            
         }).catch((e) => {
             setError(e?.response?.data?.message || e.toString());
         }).finally(() => {
             setLoading(false);
         })
-    }, []);
-
-    // useEffect(() => {
-    //     if(items.length)
-    //         setProductsDialogOpen(true)
-    // }, [items]);
+    }
     const handleProductIncremental = (product) => {
         const newData = data.map((item) => {
             if(item.id === product.order_id) {
@@ -155,23 +166,55 @@ const PaginationTable = () => {
         setProductsDialogOpen(true)
     }
 
-    const handleOrderConfirmation = () => {
+    const handleOrderConfirmation = async () => {
         if(!conformationID) return
         setIsSubmiting(true)
+        var orderData = []
         data.map((item) => {
             if(item.id === conformationID) {
-                const orderData = item.items.map(
+                orderData = item.items.map(
                     ({ id, issue }) => ({ id, issue }),
                 )
             }
         })
         const orderDetails = {
             order_id: conformationID,
-            products: orderData,
+            order_items: orderData,
         }
-
+        try{
+            const resp = await pushData(orderDetails)
+            
+            if (resp) {
+                
+                // const resData = data.map((item) => {
+                //     if(item.id === conformationID) {
+                //         return resp
+                //     }
+                //     return item
+                // })
+                // setData(resData)
+                setShowOrderConfirmationDialog(false)
+                setProductsDialogOpen(false)
+                setConformationID(null)
+                toast.push(
+                    <Notification type="success">Order fullfilled!</Notification>,
+                    { placement: 'top-center' },
+                )
+                initialData()
+            }
+        }catch (e) {
+            console.error('Error confirming order:', e);
+            toast.push(
+                <Notification type="danger">
+                    {e?.response?.data?.message || e.message.toString() || e.toString()}
+                </Notification>,
+                { placement: 'top-center' },
+            )
+        }
+        setIsSubmiting(false)
+        /*
         ApiService.fetchDataWithAxios({
-            url: '/create-sales',
+            url: '/sku-order-confirm',
             method: 'post',
             orderDetails,
         })
@@ -180,9 +223,10 @@ const PaginationTable = () => {
                 setShowOrderConfirmationDialog(false)
                 setConformationID(null)
                 const resData = data.map((item) => {
-                    if(item.id === product.conformationID) {
+                    if(item.id === conformationID) {
                         return {...item, response}
                     }
+                    return item
                 })
                 setData(resData)
             }
@@ -192,6 +236,7 @@ const PaginationTable = () => {
         }).finally(() => {
             setIsSubmiting(false)
         })
+        */
 
         hideOrderConfirmationDialog()
     }
@@ -220,7 +265,6 @@ const PaginationTable = () => {
                         <Th>Name</Th>
                         <Th>Amount</Th>
                         <Th>Status</Th>
-                        <Th>Items</Th>
                         <Th>Date</Th>
                         {history ? null : <Th>Action</Th>}
                     </Tr>
@@ -242,19 +286,18 @@ const PaginationTable = () => {
                                 <Td>{row.original.user?.name}</Td>
                                 <Td>{row.original.amount}</Td>
                                 <Td>{status[row.original.status]}</Td>
-                                <Td>
-                                    <div className="flex items-center">
-                                        <Badge className="mr-2" innerClass="bg-blue-500" content={row.original.items.length}>
-                                            <Tooltip title="View items">
-                                                <Button onClick={() => handleProductDialog(row.original.items)} shape="circle" size="sm" icon={<HiOutlineEye />} />
-                                            </Tooltip>
-                                        </Badge>
-                                    </div>
-                                </Td>
                                 <Td>{dayjs.unix(row.original.created_at).format('D MMM, YYYY h:mm a')}</Td>
                                 {history ? null : 
                                 <Td>
                                     <div className="flex justify-end text-lg gap-1">
+                                    <div className="flex items-center">
+                                        <Badge className="mr-2" innerClass="bg-blue-500" content={row.original.items.length}>
+                                            <Tooltip title="View items">
+                                                <Button onClick={() => handleProductDialog(row.original.items)} shape="circle" size="sm" icon={<HiCheck />} />
+                                            </Tooltip>
+                                        </Badge>
+                                    </div>
+                                    
                                     <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
                                     </div>
                                 </Td>
