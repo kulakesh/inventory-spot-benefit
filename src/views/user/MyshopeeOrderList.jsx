@@ -101,7 +101,6 @@ const PaginationTable = () => {
     const initialData = () => {
         apiGetData(history, user.id).then((response) => {
             setData(response)
-            
         }).catch((e) => {
             setError(e?.response?.data?.message || e.toString());
         }).finally(() => {
