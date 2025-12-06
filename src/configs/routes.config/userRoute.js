@@ -104,6 +104,19 @@ const userRoute = [
             pageBackgroundType: 'plain',
         },
     },
+    {
+        key: `${USER}:reports`,
+        path: `${USER}/reports`,
+        component: lazy(() => import('@/views/user/Reports')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Reports',
+            },
+        },
+    },
     
 ]
 

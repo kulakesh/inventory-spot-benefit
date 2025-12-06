@@ -3,6 +3,7 @@ import {
     PiWarehouseDuotone,
     PiListChecksFill,
     PiShoppingCart,
+    PiNoteLight,
 } from 'react-icons/pi'
 
 const navigationIcon = {
@@ -10,6 +11,7 @@ const navigationIcon = {
     warehouse: <PiWarehouseDuotone />,
     purchaseorder: <PiListChecksFill />,
     cart: <PiShoppingCart />,
+    reports: <PiNoteLight />,
 }
 
 export default navigationIcon
