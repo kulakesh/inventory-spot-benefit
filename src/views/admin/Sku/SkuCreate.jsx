@@ -24,6 +24,7 @@ const validationSchema = (id) => {
     state: z.string().nullish(),
     address: z.string().nullish(),
     pin: z.string().nullish(),
+    gstin: z.string().nullish(),
     username: z.string().min(4, 'Too Short!').max(12, 'Too Long!'),
     password: id 
         ? z.string().nullish() 
@@ -84,6 +85,7 @@ const Sku = () => {
             state: '',
             address: '',
             pin: '',
+            gstin: '',
             username: '',
             password: '',
         },
@@ -259,6 +261,24 @@ const Sku = () => {
                                             type="number"
                                             autoComplete="off"
                                             placeholder="Pin Number"
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label="GSTIN"
+                                invalid={Boolean(errors.gstin)}
+                                errorMessage={errors.gstin?.message}
+                            >
+                                <Controller
+                                    name="gstin"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Input
+                                            type="text"
+                                            autoComplete="off"
+                                            placeholder="GSTIN"
                                             {...field}
                                         />
                                     )}
