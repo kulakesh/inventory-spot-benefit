@@ -50,6 +50,7 @@ const Invoice = () => {
                     <p>{invoice.sku?.address} {invoice.sku?.city} {invoice.sku?.state} {invoice.sku?.pin}</p>
                     <p>Contact:  {invoice.sku?.phone}</p>
                     <p>Email: {invoice.sku?.email}</p>
+                    <p>{invoice.sku?.gstin ? `GSTIN: ${invoice.sku?.gstin}` : ''}</p>
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-6 mb-6">
@@ -118,7 +119,9 @@ const Invoice = () => {
                     </tbody>
                 </table>
             </div>
-
+            <div className="text-center mt-16 sm:w-full">
+                This is computer generated invoice no signature required
+            </div>
             <div classNameName="text-center mt-16 sm:w-full print:hidden">
                 <Button variant="solid" onClick={handleBack}>Back</Button>
             </div>
