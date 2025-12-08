@@ -65,6 +65,7 @@ const PaginationTable = () => {
     const [items, setItems] = useState([])
     const [productsDialogOpen, setProductsDialogOpen] = useState(false)
     const [showOrderConfirmationDialog, setShowOrderConfirmationDialog] = useState(false)
+    const [showOrderCancellationDialog, setShowOrderCancellationDialog] = useState(false)
     const [conformationID, setConformationID] = useState(null)
     const [isSubmiting, setIsSubmiting] = useState(false)
 
@@ -138,6 +139,29 @@ const PaginationTable = () => {
         hideOrderConfirmationDialog()
     }
 
+    const handleOrderCancellation = () => {
+        if(!conformationID) return
+        setIsSubmiting(true)
+        ApiService.fetchDataWithAxios({
+            url: `/cancel-order/${conformationID}`,
+            method: 'get',
+        })
+        .then((response) => {
+            if(response) {
+                setShowOrderConfirmationDialog(false)
+                setConformationID(null)
+                setData((prevData) => prevData.filter((item) => item.id !== conformationID))
+            }
+        })
+        .catch((error) => {
+            console.error('Error cancelling order:', error);
+        }).finally(() => {
+            setIsSubmiting(false)
+        })
+
+        hideOrderCancellationDialog()
+    }
+
     const popupOrderConformationDialog = (id) => {
         setShowOrderConfirmationDialog(true)
         setConformationID(id)
@@ -145,6 +169,14 @@ const PaginationTable = () => {
 
     const hideOrderConfirmationDialog = () => {
         setShowOrderConfirmationDialog(false)
+        setConformationID(null)
+    }
+    const popupOrderCancellationDialog = (id) => {
+        setShowOrderCancellationDialog(true)
+        setConformationID(id)
+    }
+    const hideOrderCancellationDialog = () => {
+        setShowOrderCancellationDialog(false)
         setConformationID(null)
     }
 
@@ -205,7 +237,12 @@ const PaginationTable = () => {
                                         loading={isSubmiting}
                                         variant="solid" 
                                         size="xs"/>
-                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
+                                    <Button 
+                                        onClick={() => popupOrderCancellationDialog(row.original.id)} 
+                                        icon={<HiOutlineTrash />} 
+                                        variant="plain" 
+                                        size="xs" 
+                                        className="bg-error text-white"/>
                                     </div>
                                 </Td>
                                 }
@@ -301,6 +338,20 @@ const PaginationTable = () => {
             >
                 <p>
                     Are you sure you want confirm this? This action can&apos;t
+                    be undo.{' '}
+                </p>
+            </ConfirmDialog>
+            <ConfirmDialog
+                isOpen={showOrderCancellationDialog}
+                title="Cancel Confirmation"
+                onClose={hideOrderCancellationDialog}
+                onRequestClose={hideOrderCancellationDialog}
+                onCancel={hideOrderCancellationDialog}
+                onConfirm={handleOrderCancellation}
+                type="danger"
+            >
+                <p>
+                    Are you sure you want cancel this order? This action can&apos;t
                     be undo.{' '}
                 </p>
             </ConfirmDialog>

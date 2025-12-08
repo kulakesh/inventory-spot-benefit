@@ -29,9 +29,11 @@ const ProductSelectSection = () => {
         const selected = productList.find(
             (product) => product.id === option.id,
         )
-
+        
         if (selected) {
             if (selectedProduct.some((product) => product.id === selected.id)) {
+                return
+            }else if(selected.balance <= 0 ){
                 return
             } else {
                 selectedProduct.push({ ...selected, quantity: 1 })

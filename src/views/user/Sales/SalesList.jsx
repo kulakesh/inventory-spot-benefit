@@ -130,7 +130,7 @@ const PaginationTable = () => {
                         return (
                             <Tr key={row.original.id}>
                                 <Td>{row.index + 1}</Td>
-                                <Td>{row.original.name}</Td>
+                                <Td className={row.original.myshopee_order_id ? 'text-blue-500' : ''}>{row.original.name}</Td>
                                 <Td>{row.original.phone}</Td>
                                 <Td>{row.original.city}</Td>
                                 <Td>{row.original.amount}</Td>
