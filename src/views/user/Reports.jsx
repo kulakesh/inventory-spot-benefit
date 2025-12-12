@@ -4,9 +4,18 @@ import ApiService from '@/services/ApiService'
 import dayjs from 'dayjs'
 
 const Reports = () => {
-    const stockReport = () => {
+    const handleReport = (type) => {
+        let url = '';
+        switch (type) {
+            case 'stock_report':
+                url = '/stock-report-download'
+                break;
+            case 'sales_report':
+                url = '/sales-report-download'
+                break;
+        }
         ApiService.fetchDataWithAxios({
-            url: '/stock-report-download',
+            url: url,
             method: 'get',
             responseType: 'blob',
         }).then((response) => {
@@ -16,7 +25,7 @@ const Reports = () => {
         
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'stock_report_' + dayjs().format('YYYY-MM-DD_HH:mm:ss') + '.csv'); // Set the desired filename
+            link.setAttribute('download', type + '_' + dayjs().format('YYYY-MM-DD_HH:mm:ss') + '.csv'); // Set the desired filename
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -30,9 +39,17 @@ const Reports = () => {
                 block
                 type="button"
                 variant="solid"
-                onClick={() => stockReport()}
+                onClick={() => handleReport('stock_report')}
             >
                 Stock Report
+            </Button>
+            <Button
+                block
+                type="button"
+                variant="solid"
+                onClick={() => handleReport('sales_report')}
+            >
+                Sales Report
             </Button>
         </div>
     )

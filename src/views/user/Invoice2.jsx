@@ -101,6 +101,10 @@ const Invoice = () => {
                 <table class="min-w-max w-1/2 bg-white border border-gray-300">
                     <tbody>
                     <tr>
+                        <td class="font-semibold px-4 border">Total BV:</td>
+                        <td class="px-4 border">{invoice.bv_total}</td>
+                    </tr>
+                    <tr>
                         <td class="font-semibold px-4 border">Before Tax Amount:</td>
                         <td class="px-4 border">₹{invoice.gross_total}</td>
                     </tr>
