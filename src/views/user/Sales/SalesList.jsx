@@ -6,7 +6,7 @@ import Select from '@/components/ui/Select'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
-import { useNavigate } from 'react-router'
+import { data, useNavigate } from 'react-router'
 import { HiPrinter, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
@@ -24,12 +24,13 @@ import ScrollBar from '@/components/ui/ScrollBar'
 import classNames from '@/utils/classNames'
 import dayjs from 'dayjs'
 import Tooltip from '@/components/ui/Tooltip'
+import DatePicker from '@/components/ui/DatePicker'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-async function apiGetData(id){
+async function apiGetData(id, data){
     return ApiService.fetchDataWithAxios({
-        url: `/get-sales-list/${id}`,
+        url: `/get-sales-list/${id}/${data.startDate}/${data.endDate}`,
         method: 'get',
     })
 }
@@ -49,11 +50,12 @@ const PaginationTable = () => {
     const [error, setError] = useState(null);
     const [items, setItems] = useState([])
     const [productsDialogOpen, setProductsDialogOpen] = useState(false)
+    const [dateRange, setDateRange] = useState([new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),new Date()])
 
     const { user } = useAuth()
 
     useEffect(() => {
-        apiGetData(user.id).then((response) => {
+        apiGetData(user.id, {startDate: 'undefined', endDate: 'undefined'}).then((response) => {
             setData(response)
         }).catch((e) => {
             setError(e?.response?.data || e.toString());
@@ -66,6 +68,18 @@ const PaginationTable = () => {
     //     if(items.length)
     //         setProductsDialogOpen(true)
     // }, [items]);
+    const handleRangePickerChange = (date) => {
+        if(date[0] === null || date[1] === null) return;
+        
+        setDateRange(date)
+        apiGetData(user.id, {startDate: dayjs(date[0]).format('YYYY-MM-DD'), endDate: dayjs(date[1]).format('YYYY-MM-DD')}).then((response) => {
+            setData(response)
+        }).catch((e) => {
+            setError(e?.response?.data || e.toString());
+        }).finally(() => {
+            setLoading(false);
+        })
+    }
 
     const totalData = data.length
 
@@ -99,10 +113,39 @@ const PaginationTable = () => {
         })
     }
     if (error) {
-        return <div>{error.message}</div>
+        return <>
+            <div>{error.message}</div>
+            <div className="flex items-center justify-end">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by date:
+                </label>
+                <DatePicker.DatePickerRange
+                    placeholder="Select dates range"
+                    value={dateRange}
+                    inputFormat="DD MMM, YYYY"
+                    separator="to"
+                    onChange={handleRangePickerChange}
+                    className="w-64 mb-4 ml-4"
+                />
+            </div>
+        </>
+        
     }
     return (
         <div>
+            <div className="flex items-center justify-end">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by date:
+                </label>
+                <DatePicker.DatePickerRange
+                    placeholder="Select dates range"
+                    value={dateRange}
+                    inputFormat="DD MMM, YYYY"
+                    separator="to"
+                    onChange={handleRangePickerChange}
+                    className="w-64 mb-4 ml-4"
+                />
+            </div>
             <Card>
             <Table>
                 <THead>

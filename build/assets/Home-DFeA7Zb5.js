@@ -1,1 +1,0 @@
-import{u as r,P as i,r as u,j as s,U as n,E as h}from"./index-DhwBWPTs.js";const d=()=>{const{user:e,signOut:t}=r(),a=i(),o={[h]:"/admin/dashboard",[n]:"/user/dashboard"};return u.useEffect(()=>{e.authority[0]?a(o[e.authority[0]]):t()},[]),s.jsxs("div",{children:[s.jsx("h1",{children:"Home"}),s.jsx("p",{children:"Welcome to the home page!"})]})};export{d as default};
