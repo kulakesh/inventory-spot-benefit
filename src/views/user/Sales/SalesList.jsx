@@ -50,7 +50,7 @@ const PaginationTable = () => {
     const [error, setError] = useState(null);
     const [items, setItems] = useState([])
     const [productsDialogOpen, setProductsDialogOpen] = useState(false)
-    const [dateRange, setDateRange] = useState([new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),new Date()])
+    const [dateRange, setDateRange] = useState([null, null])
 
     const { user } = useAuth()
 
@@ -70,7 +70,7 @@ const PaginationTable = () => {
     // }, [items]);
     const handleRangePickerChange = (date) => {
         if(date[0] === null || date[1] === null) return;
-        
+        setLoading(true);
         setDateRange(date)
         apiGetData(user.id, {startDate: dayjs(date[0]).format('YYYY-MM-DD'), endDate: dayjs(date[1]).format('YYYY-MM-DD')}).then((response) => {
             setData(response)

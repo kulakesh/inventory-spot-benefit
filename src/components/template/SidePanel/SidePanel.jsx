@@ -4,6 +4,7 @@ import { PiGearDuotone } from 'react-icons/pi'
 import SidePanelContent from './SidePanelContent'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { useThemeStore } from '@/store/themeStore'
+import { useAuth } from '@/auth'
 
 const _SidePanel = (props) => {
     const { className, ...rest } = props
@@ -12,6 +13,8 @@ const _SidePanel = (props) => {
     const direction = useThemeStore((state) => state.direction)
     const setPanelExpand = useThemeStore((state) => state.setPanelExpand)
 
+    const {user} = useAuth();
+    
     const openPanel = () => {
         setPanelExpand(true)
     }
@@ -29,6 +32,9 @@ const _SidePanel = (props) => {
 
     return (
         <>
+            <header className="flex items-center justify-between">
+                <h4 className="text-xl font-semibold">{user?.accountUserName}</h4>
+            </header>
             <div
                 className={classNames('text-2xl', className)}
                 onClick={openPanel}

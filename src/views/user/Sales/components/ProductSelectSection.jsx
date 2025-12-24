@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import Badge from '@/components/ui/Badge'
 import Dialog from '@/components/ui/Dialog'
 import Checkbox from '@/components/ui/Checkbox'
 import Avatar from '@/components/ui/Avatar'
@@ -34,6 +35,8 @@ const ProductSelectSection = () => {
             if (selectedProduct.some((product) => product.id === selected.id)) {
                 return
             }else if(selected.balance <= 0 ){
+                return
+            }else if(selected.category_id === 1 ){
                 return
             } else {
                 selectedProduct.push({ ...selected, quantity: 1 })
@@ -123,7 +126,22 @@ const ProductSelectSection = () => {
                                         <p className="heading-text font-bold">
                                             {option.name}
                                         </p>
-                                        <p>BV: {option.bv}</p>
+                                        <p>
+                                            BV: {option.bv} 
+                                            {option.category_id === 1 ? 
+                                                <Badge
+                                                    className="ms-2"
+                                                    content={'P'}
+                                                    innerClass="bg-emerald-500"
+                                                />
+                                            : 
+                                                <Badge
+                                                    className="ms-2"
+                                                    content={'R'}
+                                                    innerClass="bg-blue-500"
+                                                />
+                                            }
+                                        </p>
                                     </div>
                                 </div>
                                 <div>
@@ -171,7 +189,20 @@ const ProductSelectSection = () => {
                                                     {product.name}
                                                 </div>
                                                 <div>
-                                                    BV: {product.bv}
+                                                    BV: {product.bv} 
+                                                    {product.category_id === 1 ? 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'P'}
+                                                            innerClass="bg-emerald-500"
+                                                        />
+                                                    : 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'R'}
+                                                            innerClass="bg-blue-500"
+                                                        />
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -320,7 +351,22 @@ const ProductSelectSection = () => {
                                                 <p className="heading-text font-bold">
                                                     {product.name}
                                                 </p>
-                                                <p>BV: {product.bv}</p>
+                                                <p>
+                                                    BV: {product.bv} 
+                                                    {product.category_id === 1 ? 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'P'}
+                                                            innerClass="bg-emerald-500"
+                                                        />
+                                                    : 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'R'}
+                                                            innerClass="bg-blue-500"
+                                                        />
+                                                    }
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

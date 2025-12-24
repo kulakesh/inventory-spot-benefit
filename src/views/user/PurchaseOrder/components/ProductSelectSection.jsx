@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Card from '@/components/ui/Card'
+import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import Dialog from '@/components/ui/Dialog'
 import Checkbox from '@/components/ui/Checkbox'
@@ -108,9 +109,9 @@ const ProductSelectSection = () => {
         }, 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProduct, selectedProduct.length])
-    const totalPv = useMemo(() => {
+    const totalBv = useMemo(() => {
         return selectedProduct.reduce((accumulator, product) => {
-            return accumulator + product.pv * product.quantity
+            return accumulator + product.bv * product.quantity
         }, 0)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedProduct, selectedProduct.length])
@@ -139,7 +140,23 @@ const ProductSelectSection = () => {
                                         <p className="heading-text font-bold">
                                             {option.name}
                                         </p>
-                                        <p>PV: {option.pv}</p>
+                                        <p>
+                                            BV: {option.bv} 
+                                            {option.category_id === 1 ? 
+                                                <Badge
+                                                    className="ms-2"
+                                                    content={'P'}
+                                                    innerClass="bg-emerald-500"
+                                                />
+                                            : 
+                                                <Badge
+                                                    className="ms-2"
+                                                    content={'R'}
+                                                    innerClass="bg-blue-500"
+                                                />
+                                            }
+                                            
+                                        </p>
                                     </div>
                                 </div>
                                 <div>
@@ -187,7 +204,20 @@ const ProductSelectSection = () => {
                                                     {product.name}
                                                 </div>
                                                 <div>
-                                                    PV: {product.pv}
+                                                BV: {product.bv} 
+                                                {product.category_id === 1 ? 
+                                                    <Badge
+                                                        className="ms-2"
+                                                        content={'P'}
+                                                        innerClass="bg-emerald-500"
+                                                    />
+                                                : 
+                                                    <Badge
+                                                        className="ms-2"
+                                                        content={'R'}
+                                                        innerClass="bg-blue-500"
+                                                    />
+                                                }
                                                 </div>
                                             </div>
                                         </div>
@@ -269,12 +299,12 @@ const ProductSelectSection = () => {
                 </Table>
                 <div className="mt-8 flex justify-between">
                     <span className="text-base flex items-center gap-2">
-                        <span className="font-semibold">Total PV: </span>
+                        <span className="font-semibold">Total BV: </span>
                         <span className="text-lg font-bold heading-text">
                             <NumericFormat
                                 fixedDecimalScale
                                 displayType="text"
-                                value={totalPv}
+                                value={totalBv}
                                 decimalScale={2}
                             />
                         </span>
@@ -339,7 +369,22 @@ const ProductSelectSection = () => {
                                                 <p className="heading-text font-bold">
                                                     {product.name}
                                                 </p>
-                                                <p>PV: {product.pv}</p>
+                                                <p>
+                                                    BV: {product.bv} 
+                                                    {product.category_id === 1 ? 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'P'}
+                                                            innerClass="bg-emerald-500"
+                                                        />
+                                                    : 
+                                                        <Badge
+                                                            className="ms-2"
+                                                            content={'R'}
+                                                            innerClass="bg-blue-500"
+                                                        />
+                                                    }
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

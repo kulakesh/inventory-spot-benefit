@@ -76,8 +76,8 @@ const Invoice = () => {
                 <th className="px-2 border">Qty</th>
                 <th className="px-2 border">Rate (₹)</th>
                 <th className="px-2 border">Gross Amt (₹)</th>
-                <th className="px-2 border">IGST (%)</th>
-                <th className="px-2 border">IGST (₹)</th>
+                <th className="px-2 border">CGST (%)</th>
+                <th className="px-2 border">CGST (₹)</th>
                 <th className="px-2 border">Net Amt (₹)</th>
                 </tr>
             </thead>
@@ -109,7 +109,7 @@ const Invoice = () => {
                         <td class="px-4 border">₹{invoice.gross_total}</td>
                     </tr>
                     <tr>
-                        <td class="font-semibold px-4 border">Add: IGST:</td>
+                        <td class="font-semibold px-4 border">Add: CGST:</td>
                         <td class="px-4 border">₹{invoice.igst_total}</td>
                     </tr>
                     <tr>
