@@ -36,8 +36,8 @@ const ProductSelectSection = () => {
                 return
             }else if(selected.balance <= 0 ){
                 return
-            }else if(selected.category_id === 1 ){
-                return
+            // }else if(selected.category_id === 1 ){
+            //     return
             } else {
                 selectedProduct.push({ ...selected, quantity: 1 })
                 setSelectedProduct(selectedProduct)

@@ -240,6 +240,7 @@ const PaginationTable = () => {
                                     <Button 
                                         onClick={() => popupOrderCancellationDialog(row.original.id)} 
                                         icon={<HiOutlineTrash />} 
+                                        loading={isSubmiting}
                                         variant="plain" 
                                         size="xs" 
                                         className="bg-error text-white"/>
