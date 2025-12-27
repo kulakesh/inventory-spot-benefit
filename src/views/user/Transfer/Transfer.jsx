@@ -4,8 +4,7 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
-import SalesForm from './SalesForm'
-import { useNavigate } from 'react-router'
+import SalesForm from './TransferForm'
 import { TbTrash } from 'react-icons/tb'
 import { useOrderFormStore } from './store/orderFormStore'
 import { useAuth } from '@/auth'
@@ -13,13 +12,12 @@ import ApiService from '@/services/ApiService'
 
 async function pushData(data) {
     return ApiService.fetchDataWithAxios({
-        url: '/create-sales',
+        url: '/create-transfer',
         method: 'post',
         data,
     })
 }
 const Sales = () => {
-    const navigate = useNavigate()
     const { user } = useAuth()
     const { setSelectedProduct, selectedProduct, setProductList, productList } = useOrderFormStore()
 
@@ -46,8 +44,7 @@ const Sales = () => {
         
         const orderDetails = {
             id: user.id,
-            sku_user_name: user.userName,
-            buyer: values,
+            sku: values,
             products: orderData,
         }
         
@@ -56,7 +53,7 @@ const Sales = () => {
             
             if (resp) {
                 toast.push(
-                    <Notification type="success">Order Placed!</Notification>,
+                    <Notification type="success">Stock Transferred!</Notification>,
                     { placement: 'top-center' },
                 )
                 setProductList(
@@ -71,10 +68,6 @@ const Sales = () => {
                 setSelectedProduct([])
                 setFormRefresh((prev) => !prev)
                 
-                navigate(`/user/invoice2`, {
-                    state: resp.invoice.original[0],
-                })
-                
             }
         }catch (e) {
             toast.push(
@@ -85,7 +78,6 @@ const Sales = () => {
             )
         }
         setIsSubmiting(false)
-        // navigate('/concepts/orders/order-list')
     }
 
     const handleConfirmDiscard = () => {
@@ -106,7 +98,9 @@ const Sales = () => {
     const handleCancel = () => {
         setDiscardConfirmationOpen(false)
     }
-
+    if(user.id != 2){
+        return <div>You are not authorized to access this page.</div>
+    }
     return (
         <>
             <SalesForm onFormSubmit={handleFormSubmit} refresh={formRefresh}>

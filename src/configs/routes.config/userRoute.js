@@ -16,6 +16,19 @@ const userRoute = [
         },
     },
     {
+        key: `${USER}:stocktransfer`, 
+        path: `${USER}/stocktransfer`, 
+        component: lazy(() => import('@/views/user/Transfer/')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Transfer Stock',
+            },
+        },
+    },
+    {
         key: `${USER}:purchase-order:list`,
         path: `${USER}/purchase-order/list`,
         component: lazy(() => import('@/views/user/PurchaseOrder/OrderList')),
@@ -64,6 +77,19 @@ const userRoute = [
             pageContainerType: 'contained',
             header: {
                 title: 'Sales List',
+            },
+        },
+    },
+    {
+        key: `${USER}:sales:transfer`,
+        path: `${USER}/sales/:transfer`,
+        component: lazy(() => import('@/views/user/Sales/SalesList')),
+        authority: [USER],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Transfer List',
             },
         },
     },

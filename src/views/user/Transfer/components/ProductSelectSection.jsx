@@ -3,6 +3,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Dialog from '@/components/ui/Dialog'
+import Input from '@/components/ui/Input'
 import Checkbox from '@/components/ui/Checkbox'
 import Avatar from '@/components/ui/Avatar'
 import Table from '@/components/ui/Table'
@@ -67,6 +68,29 @@ const ProductSelectSection = () => {
                 selectedProduct.filter((product) => product.id !== targeted.id),
             )
         } else {
+            setSelectedProduct(
+                selectedProduct.map((product) => {
+                    if (product.id === targeted.id) {
+                        product = targeted
+                    }
+                    return product
+                }),
+            )
+        }
+    }
+
+    const handleProductTypography = (productToChange, event) => {
+        const targeted = productToChange
+
+        targeted.quantity = event.target.valueAsNumber
+        if (targeted.quantity === 0) {
+            setSelectedProduct(
+                selectedProduct.filter((product) => product.id !== targeted.id),
+            )
+        } else {
+            if (targeted.quantity > productToChange.balance) {
+                targeted.quantity = productToChange.balance
+            }
             setSelectedProduct(
                 selectedProduct.map((product) => {
                     if (product.id === targeted.id) {
@@ -231,8 +255,18 @@ const ProductSelectSection = () => {
                                                     )
                                                 }
                                             />
-                                            <div className="w-10 text-center">
-                                                <span>{product.quantity}</span>
+                                            <div className="w-15 text-center">
+                                                <Input
+                                                    type="number" 
+                                                    autoComplete="off"
+                                                    value={product.quantity}
+                                                    className="text-center"
+                                                    onChange={(event) =>
+                                                        handleProductTypography(
+                                                            product, event
+                                                        )
+                                                    }
+                                                />
                                             </div>
                                             <Button
                                                 type="button"

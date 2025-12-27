@@ -6,7 +6,7 @@ import Select from '@/components/ui/Select'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
-import { useParams, useNavigate } from 'react-router'
+import { data, useNavigate } from 'react-router'
 import { HiPrinter, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
@@ -28,9 +28,9 @@ import DatePicker from '@/components/ui/DatePicker'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-async function apiGetData(id, data, transfer){
+async function apiGetData(id, data){
     return ApiService.fetchDataWithAxios({
-        url: `/get-sales-list/${id}/${data.startDate}/${data.endDate}/${transfer}`,
+        url: `/get-sales-list/${id}/${data.startDate}/${data.endDate}`,
         method: 'get',
     })
 }
@@ -45,7 +45,6 @@ const pageSizeOption = [
 
 const PaginationTable = () => {
     const navigate = useNavigate()
-    const { transfer } = useParams()
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -56,7 +55,7 @@ const PaginationTable = () => {
     const { user } = useAuth()
 
     useEffect(() => {
-        apiGetData(user.id, {startDate: 'undefined', endDate: 'undefined'}, transfer).then((response) => {
+        apiGetData(user.id, {startDate: 'undefined', endDate: 'undefined'}).then((response) => {
             setData(response)
         }).catch((e) => {
             setError(e?.response?.data || e.toString());

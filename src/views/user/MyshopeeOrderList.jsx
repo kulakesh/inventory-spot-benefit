@@ -169,13 +169,28 @@ const PaginationTable = () => {
         if(!conformationID) return
         setIsSubmiting(true)
         var orderData = []
+        var emtyOrder = true
         data.map((item) => {
             if(item.id === conformationID) {
                 orderData = item.items.map(
                     ({ id, issue }) => ({ id, issue }),
                 )
+                const hasIssue = item.items.some(({ issue }) => issue > 0)
+                if (hasIssue) {
+                    emtyOrder = false
+                }
             }
         })
+        if(emtyOrder) {
+            toast.push(
+                <Notification type="danger">Please issue atleast one item!</Notification>,
+                { placement: 'top-center' },
+            )
+            setIsSubmiting(false)
+            hideOrderConfirmationDialog()
+            setProductsDialogOpen(false)
+            return
+        }
         const orderDetails = {
             order_id: conformationID,
             order_items: orderData,
