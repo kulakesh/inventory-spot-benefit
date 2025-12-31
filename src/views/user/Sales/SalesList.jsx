@@ -123,6 +123,7 @@ const PaginationTable = () => {
                 <DatePicker.DatePickerRange
                     placeholder="Select dates range"
                     value={dateRange}
+                    singleDate={true}
                     inputFormat="DD MMM, YYYY"
                     separator="to"
                     onChange={handleRangePickerChange}
@@ -141,6 +142,7 @@ const PaginationTable = () => {
                 <DatePicker.DatePickerRange
                     placeholder="Select dates range"
                     value={dateRange}
+                    singleDate={true}
                     inputFormat="DD MMM, YYYY"
                     separator="to"
                     onChange={handleRangePickerChange}
