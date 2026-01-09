@@ -73,7 +73,7 @@ const PaginationTable = () => {
         if(date[0] === null || date[1] === null) return;
         setLoading(true);
         setDateRange(date)
-        apiGetData(user.id, {startDate: dayjs(date[0]).format('YYYY-MM-DD'), endDate: dayjs(date[1]).format('YYYY-MM-DD')}).then((response) => {
+        apiGetData(user.id, {startDate: dayjs(date[0]).format('YYYY-MM-DD'), endDate: dayjs(date[1]).format('YYYY-MM-DD')}, transfer).then((response) => {
             setData(response)
         }).catch((e) => {
             setError(e?.response?.data || e.toString());
