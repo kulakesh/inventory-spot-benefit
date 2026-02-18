@@ -168,6 +168,7 @@ const PaginationTable = () => {
     const handleOrderConfirmation = async () => {
         if(!conformationID) return
         setIsSubmiting(true)
+        hideOrderConfirmationDialog()
         var orderData = []
         var emtyOrder = true
         data.map((item) => {
@@ -187,7 +188,6 @@ const PaginationTable = () => {
                 { placement: 'top-center' },
             )
             setIsSubmiting(false)
-            hideOrderConfirmationDialog()
             setProductsDialogOpen(false)
             return
         }

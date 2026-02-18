@@ -1,5 +1,5 @@
 import { lazy } from 'react'
-import { ADMIN, USER } from '@/constants/roles.constant'
+import { ADMIN } from '@/constants/roles.constant'
 
 const adminRoute = [
     {
@@ -49,6 +49,45 @@ const adminRoute = [
         meta: {
             header: {
                 title: 'Edit SKU',
+            },
+            contained: true,
+            footer: false,
+        },
+    },
+    {
+        key: `${ADMIN}:franchisee.list`, 
+        path: `${ADMIN}/franchisee/list`, 
+        component: lazy(() => import('@/views/admin/Franchisee/FranchiseeList')),
+        authority: [ADMIN],
+        meta: {
+            header: {
+                title: 'District Franchisee List',
+            },
+            contained: true,
+            footer: false,
+        },
+    },
+    {
+        key: `${ADMIN}:franchisee.create`, 
+        path: `${ADMIN}/franchisee/create`, 
+        component: lazy(() => import('@/views/admin/Franchisee/FranchiseeCreate')),
+        authority: [ADMIN],
+        meta: {
+            header: {
+                title: 'Create District Franchisee',
+            },
+            contained: true,
+            footer: false,
+        },
+    },
+    {
+        key: `${ADMIN}:franchisee.edit`, 
+        path: `${ADMIN}/franchisee/edit/:id`,
+        component: lazy(() => import('@/views/admin/Franchisee/FranchiseeCreate')),
+        authority: [ADMIN],
+        meta: {
+            header: {
+                title: 'Edit District Franchisee',
             },
             contained: true,
             footer: false,

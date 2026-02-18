@@ -2,9 +2,9 @@ import { useRef, useImperativeHandle, useState, useEffect } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser, useToken } from '@/store/authStore'
-import { apiAdminCheck, apiAdminSignIn, apiAdminSignOut, apiUserCheck, apiUserSignIn, apiUserSignOut } from '@/services/AuthService'
+import { apiAdminCheck, apiAdminSignIn, apiAdminSignOut, apiUserCheck, apiUserSignIn, apiUserSignOut, apiFranchiseeCheck, apiFranchiseeSignIn, apiFranchiseeSignOut } from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
-import { ADMIN, USER } from '@/constants/roles.constant'
+import { ADMIN, USER, FRANCHISEE } from '@/constants/roles.constant'
 import { useNavigate } from 'react-router'
 
 const IsolatedNavigator = ({ ref }) => {
@@ -66,6 +66,8 @@ function AuthProvider({ children }) {
                 resp = await apiAdminCheck()
             }else if(user?.authority[0] === USER){
                 resp = await apiUserCheck()
+            }else if(user?.authority[0] === FRANCHISEE){
+                resp = await apiFranchiseeCheck()
             }
         }
         if (resp) {
@@ -86,6 +88,8 @@ function AuthProvider({ children }) {
                 resp = await apiAdminSignIn(values)
             }else if(values.authority === USER){
                 resp = await apiUserSignIn(values)   
+            }else if(values.authority === FRANCHISEE){
+                resp = await apiFranchiseeSignIn(values)   
             }
             if (resp?.token) {
                 handleSignIn({ accessToken: resp.token }, resp.user)
@@ -111,6 +115,7 @@ function AuthProvider({ children }) {
         const signOutPath = {
             [ADMIN]: '/admin',
             [USER]: '/user/sign-in',
+            [FRANCHISEE]: '/franchisee',
         }
         
         try {
@@ -118,6 +123,8 @@ function AuthProvider({ children }) {
                 await apiAdminSignOut()
             }else if(values.authority === USER){
                 await apiUserSignOut()
+            }else if(values.authority === FRANCHISEE){
+                await apiFranchiseeSignOut()
             }
         } finally {
             handleSignOut()

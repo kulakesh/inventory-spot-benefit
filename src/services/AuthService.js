@@ -44,6 +44,26 @@ export async function apiUserSignOut() {
     })
 }
 
+export async function apiFranchiseeCheck() {
+    return ApiService.fetchDataWithAxios({
+        url: '/franchisee-check',
+        method: 'get'
+    })
+}
+export async function apiFranchiseeSignIn(data) {
+    return ApiService.fetchDataWithAxios({
+        url: '/franchisee-sign-in',
+        method: 'post',
+        data,
+    })
+}
+
+export async function apiFranchiseeSignOut() {
+    return ApiService.fetchDataWithAxios({
+        url: '/franchisee-sign-out',
+        method: 'post',
+    })
+}
 export async function apiForgotPassword(data) {
     return ApiService.fetchDataWithAxios({
         url: endpointConfig.forgotPassword,

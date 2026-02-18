@@ -20,6 +20,18 @@ const authRoute = [
         authority: [],
     },
     {
+        key: 'signInFranchisee',
+        path: `/franchisee`,
+        component: lazy(() => import('@/views/auth/SignIn/SignInFranchisee')),
+        authority: [],
+    },
+    {
+        key: 'signInFranchisee',
+        path: `/franchisee/`,
+        component: lazy(() => import('@/views/auth/SignIn/SignInFranchisee')),
+        authority: [],
+    },
+    {
         key: 'signUp',
         path: `/sign-up`,
         component: lazy(() => import('@/views/auth/SignUp')),
