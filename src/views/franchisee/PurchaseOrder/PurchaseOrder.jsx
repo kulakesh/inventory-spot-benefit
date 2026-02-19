@@ -5,7 +5,6 @@ import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
 import OrderForm from './OrderForm'
-import { useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 import { useOrderFormStore } from './store/orderFormStore'
 import { useAuth } from '@/auth'
@@ -19,7 +18,6 @@ async function pushData(data) {
     })
 }
 const PurchaseOrder = () => {
-    const navigate = useNavigate()
     const { user } = useAuth()
     const { setSelectedProduct, selectedProduct } = useOrderFormStore()
 
@@ -65,7 +63,6 @@ const PurchaseOrder = () => {
             )
         }
         setIsSubmiting(false)
-        // navigate('/concepts/orders/order-list')
     }
 
     const handleConfirmDiscard = () => {
@@ -75,7 +72,6 @@ const PurchaseOrder = () => {
             <Notification type="success">Order discarded!</Notification>,
             { placement: 'top-center' },
         )
-        // navigate('/concepts/orders/order-list')
     }
 
     const handleDiscard = () => {

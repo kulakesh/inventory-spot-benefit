@@ -86,6 +86,16 @@ const userConfig = [
                 authority: [USER],
                 subMenu: [],
             },
+            {
+                key: `${USER}:franchisee-order:list`,
+                path: `${USER}/franchisee-order/list`,
+                title: 'Franchisee Orders',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [USER],
+                subMenu: [],
+            },
         ],
     },
     {

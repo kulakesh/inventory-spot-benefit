@@ -192,7 +192,7 @@ const Franchisee = () => {
                                         <Input
                                             type="text"
                                             autoComplete="off"
-                                            placeholder="SKU Name"
+                                            placeholder="Franchisee Name"
                                             {...field}
                                         />
                                     )}
