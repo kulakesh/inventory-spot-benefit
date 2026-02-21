@@ -6,8 +6,8 @@ import Select from '@/components/ui/Select'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
-import { useNavigate } from 'react-router'
-import { HiOutlineTrash, HiOutlineEye } from 'react-icons/hi'
+import { useParams, useNavigate } from 'react-router'
+import { HiPrinter, HiOutlineEye } from 'react-icons/hi'
 import {
     useReactTable,
     getCoreRowModel,
@@ -24,12 +24,13 @@ import ScrollBar from '@/components/ui/ScrollBar'
 import classNames from '@/utils/classNames'
 import dayjs from 'dayjs'
 import Tooltip from '@/components/ui/Tooltip'
+import DatePicker from '@/components/ui/DatePicker'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-async function apiGetData(id){
+async function apiGetData(id, data){
     return ApiService.fetchDataWithAxios({
-        url: `/get-order-list/franchisee/${id}`,
+        url: `/get-franchisee-sales-list/${id}/${data.startDate}/${data.endDate}`,
         method: 'get',
     })
 }
@@ -42,19 +43,6 @@ const pageSizeOption = [
     { value: 50, label: '50 / page' },
 ]
 
-const status = [
-    <Badge
-        className="mr-4"
-        content={'Pending'}
-        innerClass="bg-white text-gray-500"
-    />, 
-    'Deleted', 
-    <Badge
-        className="mr-4"
-        content={'Complete'}
-        innerClass="bg-emerald-500"
-    />, 
-]
 const PaginationTable = () => {
     const navigate = useNavigate()
     const [data, setData] = useState([])
@@ -62,11 +50,12 @@ const PaginationTable = () => {
     const [error, setError] = useState(null);
     const [items, setItems] = useState([])
     const [productsDialogOpen, setProductsDialogOpen] = useState(false)
+    const [dateRange, setDateRange] = useState([null, null])
 
     const { user } = useAuth()
 
     useEffect(() => {
-        apiGetData(user.id).then((response) => {
+        apiGetData(user.id, {startDate: 'undefined', endDate: 'undefined'}).then((response) => {
             setData(response)
         }).catch((e) => {
             setError(e?.response?.data || e.toString());
@@ -79,6 +68,18 @@ const PaginationTable = () => {
     //     if(items.length)
     //         setProductsDialogOpen(true)
     // }, [items]);
+    const handleRangePickerChange = (date) => {
+        if(date[0] === null || date[1] === null) return;
+        setLoading(true);
+        setDateRange(date)
+        apiGetData(user.id, {startDate: dayjs(date[0]).format('YYYY-MM-DD'), endDate: dayjs(date[1]).format('YYYY-MM-DD')}, transfer).then((response) => {
+            setData(response)
+        }).catch((e) => {
+            setError(e?.response?.data || e.toString());
+        }).finally(() => {
+            setLoading(false);
+        })
+    }
 
     const totalData = data.length
 
@@ -90,6 +91,10 @@ const PaginationTable = () => {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
     })
+    
+    const handleEdit = (row) => {
+        navigate(`/admin/sku/edit/${row.original.id}`)
+    }
 
     const onPaginationChange = (page) => {
         table.setPageIndex(page - 1)
@@ -103,20 +108,52 @@ const PaginationTable = () => {
         setProductsDialogOpen(true)
     }
     if (error) {
-        return <div>{error.message}</div>
+        return <>
+            <div>{error.message}</div>
+            <div className="flex items-center justify-end">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by date:
+                </label>
+                <DatePicker.DatePickerRange
+                    placeholder="Select dates range"
+                    value={dateRange}
+                    singleDate={true}
+                    inputFormat="DD MMM, YYYY"
+                    separator="to"
+                    onChange={handleRangePickerChange}
+                    className="w-64 mb-4 ml-4"
+                />
+            </div>
+        </>
+        
     }
     return (
         <div>
+            <div className="flex items-center justify-end">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Filter by date:
+                </label>
+                <DatePicker.DatePickerRange
+                    placeholder="Select dates range"
+                    value={dateRange}
+                    singleDate={true}
+                    inputFormat="DD MMM, YYYY"
+                    separator="to"
+                    onChange={handleRangePickerChange}
+                    className="w-64 mb-4 ml-4"
+                />
+            </div>
             <Card>
             <Table>
                 <THead>
                     <Tr>
                         <Th>Sl No</Th>
+                        <Th>Name</Th>
+                        <Th>Phone</Th>
+                        <Th>City</Th>
                         <Th>Amount</Th>
-                        <Th>Status</Th>
                         <Th>Items</Th>
                         <Th>Date</Th>
-                        <Th>Action</Th>
                     </Tr>
                 </THead>
                 {loading ?
@@ -132,8 +169,10 @@ const PaginationTable = () => {
                         return (
                             <Tr key={row.original.id}>
                                 <Td>{row.index + 1}</Td>
+                                <Td>{row.original.name}</Td>
+                                <Td>{row.original.phone}</Td>
+                                <Td>{row.original.city}</Td>
                                 <Td>{row.original.amount}</Td>
-                                <Td>{status[row.original.status]}</Td>
                                 <Td>
                                     <div className="flex items-center">
                                         <Badge className="mr-2" innerClass="bg-blue-500" content={row.original.items.length}>
@@ -144,9 +183,6 @@ const PaginationTable = () => {
                                     </div>
                                 </Td>
                                 <Td>{dayjs.unix(row.original.created_at).format('D MMM, YYYY h:mm a')}</Td>
-                                <Td>
-                                    <Button icon={<HiOutlineTrash />} variant="plain" size="xs" className="bg-error text-white"/>
-                                </Td>
                             </Tr>
                         )
                     })}

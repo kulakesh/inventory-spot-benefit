@@ -381,7 +381,7 @@ const PaginationTable = () => {
                                         <Td>{product.issued}</Td>
                                         <Td>
                                             {
-                                                product.balance < product.quantity 
+                                                product.balance < product.quantity - product.issued
                                                 ? <Badge
                                                     content={product.balance}
                                                     innerClass="bg-red-500"

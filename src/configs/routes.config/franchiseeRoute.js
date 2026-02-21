@@ -41,6 +41,32 @@ const franchiseeRoute = [
             },
         },
     },
+    {
+        key: `${FRANCHISEE}:myshopee-orders`,
+        path: `${FRANCHISEE}/myshopee-orders`,
+        component: lazy(() => import('@/views/franchisee/OrderListMyshopee')),
+        authority: [FRANCHISEE],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Myshopee Orders',
+            },
+        },
+    },
+    {
+        key: `${FRANCHISEE}:sales:list`,
+        path: `${FRANCHISEE}/sales/list`,
+        component: lazy(() => import('@/views/franchisee/SalesList')),
+        authority: [FRANCHISEE],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Myshpee Order History',
+            },
+        },
+    },
     
 ]
 

@@ -34,7 +34,7 @@ import Notification from '@/components/ui/Notification'
 const { Tr, Th, Td, THead, TBody } = Table
 
 async function apiGetData(history, id){
-    const url = history ? `/get-order-history/` : `/franchisee-order-list/`  + id;
+    const url = history ? `/get-order-history/` : `/franchisee-myshopee-order-list/`  + id;
     return ApiService.fetchDataWithAxios({
         url: url,
         method: 'get',
@@ -42,7 +42,7 @@ async function apiGetData(history, id){
 }
 async function pushData(data) {
     return ApiService.fetchDataWithAxios({
-        url: '/franchisee-order-confirm',
+        url: '/franchisee-myshopee-order-confirm',
         method: 'post',
         data,
     })
@@ -219,6 +219,31 @@ const PaginationTable = () => {
             )
         }
         setIsSubmiting(false)
+        /*
+        ApiService.fetchDataWithAxios({
+            url: '/sku-order-confirm',
+            method: 'post',
+            orderDetails,
+        })
+        .then((response) => {
+            if(response) {
+                setShowOrderConfirmationDialog(false)
+                setConformationID(null)
+                const resData = data.map((item) => {
+                    if(item.id === conformationID) {
+                        return {...item, response}
+                    }
+                    return item
+                })
+                setData(resData)
+            }
+        })
+        .catch((error) => {
+            console.error('Error confirming order:', error);
+        }).finally(() => {
+            setIsSubmiting(false)
+        })
+        */
 
         hideOrderConfirmationDialog()
     }
