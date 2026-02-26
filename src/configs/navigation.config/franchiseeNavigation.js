@@ -78,7 +78,47 @@ const franchiseeConfig = [
             },
         ],
     },
-    
+    {
+        key: `${FRANCHISEE}:wallet`,
+        path: '',
+        title: 'Wallet',
+        translateKey: 'nav.home',
+        icon: 'wallet',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [FRANCHISEE],
+        subMenu: [
+            {
+                key: `${FRANCHISEE}:wallet-request-fund`,
+                path: `${FRANCHISEE}/wallet/request/fund`,
+                title: 'Request Fund',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [FRANCHISEE],
+                subMenu: [],
+            },
+            {
+                key: `${FRANCHISEE}:wallet-history`,
+                path: `${FRANCHISEE}/wallet/history`,
+                title: 'History',
+                translateKey: 'nav.collapseMenu.item1',
+                icon: '',                
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [FRANCHISEE],
+                subMenu: [],
+            },
+        ],
+    },
+    {
+        key: `${FRANCHISEE}:reports`,
+        path: `${FRANCHISEE}/reports`,
+        title: 'Reports',
+        translateKey: 'nav.home',
+        icon: 'reports',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [FRANCHISEE],
+        subMenu: [],
+    },
 
 ]
 

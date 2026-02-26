@@ -6,6 +6,7 @@ import {
     PiNoteLight,
     PiTruck,
     PiHandshake,
+    PiWalletLight,
 } from 'react-icons/pi'
 
 const navigationIcon = {
@@ -16,6 +17,7 @@ const navigationIcon = {
     reports: <PiNoteLight />,
     stocktransfer: <PiTruck />,
     franchisee: <PiHandshake />,
+    wallet: <PiWalletLight />,
 }
 
 export default navigationIcon

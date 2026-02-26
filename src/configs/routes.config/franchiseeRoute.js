@@ -67,6 +67,45 @@ const franchiseeRoute = [
             },
         },
     },
+    {
+        key: `${FRANCHISEE}:reports`,
+        path: `${FRANCHISEE}/reports`,
+        component: lazy(() => import('@/views/franchisee/Reports')),
+        authority: [FRANCHISEE],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Reports',
+            },
+        },
+    },
+    {
+        key: `${FRANCHISEE}:wallet-request-fund`,
+        path: `${FRANCHISEE}/wallet/request/fund`,
+        component: lazy(() => import('@/views/franchisee/RequestFund')),
+        authority: [FRANCHISEE],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Request Fund',
+            },
+        },
+    },
+    {
+        key: `${FRANCHISEE}:wallet-history`,
+        path: `${FRANCHISEE}/wallet/history`,
+        component: lazy(() => import('@/views/franchisee/WalletHistory2')),
+        authority: [FRANCHISEE],
+        meta: {
+            pageBackgroundType: 'plain',
+            pageContainerType: 'contained',
+            header: {
+                title: 'Wallet History',
+            },
+        },
+    },
     
 ]
 
