@@ -11,7 +11,7 @@ import Loading from '@/components/shared/Loading'
 
 async function apiGetData(id){
     return ApiService.fetchDataWithAxios({
-        url: `/get-product-list/franchisee/${id}`,
+        url: `/get-franchisee-product-list`,
         method: 'get',
     })
 }
@@ -19,6 +19,7 @@ async function apiGetData(id){
 const OrderForm = (props) => {
     const [loading, setLoading] = useState(true);
     const [apierror, setApiError] = useState(null);
+    const [walletBalance, setWalletBalance] = useState(0);
     const { onFormSubmit, children, defaultValues, defaultProducts } = props
 
     const { setProductList, setSelectedProduct } =
@@ -28,7 +29,8 @@ const OrderForm = (props) => {
 
     useEffect(() => {
         apiGetData(user.id).then((resp) => {
-            setProductList(resp)
+            setProductList(resp.products)
+            setWalletBalance(resp.wallet_balance)
         }).catch((e) => {
             setApiError(e?.response?.data || e.toString());
         }).finally(() => {
@@ -78,7 +80,7 @@ const OrderForm = (props) => {
                 <Container>
                     <div className="flex-1">
                         <div className="flex flex-col gap-4">
-                            <ProductSelectSection />
+                            <ProductSelectSection walletBallance={walletBalance}/>
                         </div>
                     </div>
                 </Container>

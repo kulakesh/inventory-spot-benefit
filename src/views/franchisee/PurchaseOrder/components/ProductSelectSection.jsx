@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -17,7 +17,8 @@ import { TbSearch, TbMinus, TbPlus } from 'react-icons/tb'
 
 const { Tr, Th, Td, THead, TBody } = Table
 
-const ProductSelectSection = () => {
+const ProductSelectSection = (props) => {
+    const { walletBallance } = props
     const { productList, selectedProduct, setSelectedProduct } =
         useOrderFormStore()
 
@@ -318,6 +319,19 @@ const ProductSelectSection = () => {
                                 displayType="text"
                                 value={totalBv}
                                 decimalScale={2}
+                            />
+                        </span>
+                    </span>
+                    <span className="text-base flex items-center gap-2">
+                        <span className="font-semibold ">Wallet Balance: </span>
+                        <span className={`text-lg font-bold heading-text ${walletBallance >= total ? 'text-emerald-500' : 'text-rose-500'}`}>
+                            <NumericFormat
+                                fixedDecimalScale
+                                prefix="₹"
+                                displayType="text"
+                                value={walletBallance}
+                                decimalScale={2}
+                                thousandSeparator={true}
                             />
                         </span>
                     </span>

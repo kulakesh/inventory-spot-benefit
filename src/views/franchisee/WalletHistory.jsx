@@ -1,144 +1,142 @@
-import { useState, useEffect } from 'react'
-import Table from '@/components/ui/Table'
+import React, { useEffect, useState } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+} from "@tanstack/react-table";
 import Pagination from '@/components/ui/Pagination'
+import Table from '@/components/ui/Table'
 import ApiService from '@/services/ApiService'
 import { Card } from '@/components/ui'
 import Select from '@/components/ui/Select'
-import {
-    useReactTable,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-} from '@tanstack/react-table'
 import TableRowSkeleton from '@/components/shared/loaders/TableRowSkeleton'
 import dayjs from 'dayjs'
+import appConfig from '@/configs/app.config'
 
 const { Tr, Th, Td, THead, TBody } = Table
-
-async function apiGetData(page, pageSize){
-    const url = `/franchisee-wallet-history/?page=${page}&per_page=${pageSize}`
-    return ApiService.fetchDataWithAxios({
-        url: url,
-        method: 'get',
-    })
-}
-const pageSizeOption = [
-    { value: 10, label: '10 / page' },
-    { value: 20, label: '20 / page' },
-    { value: 30, label: '30 / page' },
-    { value: 40, label: '40 / page' },
-    { value: 50, label: '50 / page' },
-]
-
-const WalletHistory = () => {
-    const [data, setData] = useState([])
+export default function WalletHistory() {
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [totalRecord, setTotalRecord] = useState();
-    const [pagination, setPagination] = useState({
-        page: 1,
-        pageSize: 2,
-    })
-    let total_page = 0;
+    const [pageIndex, setPageIndex] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [pageCount, setPageCount] = useState(0);
+    const [recordCount, setRecordCount] = useState(0);
 
     useEffect(() => {
-        getData()
-    }, []);
+        fetchData();
+    }, [pageIndex, pageSize]);
 
-    const getData = async () => {
-        apiGetData(pagination.page, pagination.pageSize).then((response) => {
-            setTotalRecord(response.total || 0)
-            setData(response.data)
+    const fetchData = async () => {
+        setLoading(true);
+        ApiService.fetchDataWithAxios({
+            url: `/franchisee-wallet-history`,
+            method: 'get',
+            params: {
+                page: pageIndex,
+                per_page: pageSize,
+            },
+        }).then((response) => {
+            setData(response.data);
+            setPageCount(response.last_page);
+            setRecordCount(response.total);
         }).catch((e) => {
             setError(e?.response?.data || e.toString());
         }).finally(() => {
             setLoading(false);
         })
-    }
+
+    };
+
     const table = useReactTable({
         data,
-        getCoreRowModel: getCoreRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
+        pageCount,
+        state: {
+        pagination: {
+            pageIndex,
+            pageSize,
+        },
+        },
         manualPagination: true,
-    })
-    const onPaginationChange = (page) => {
-        table.setPageIndex(page - 1)
-        console.log('Page changed:', page)
-    }
+        onPaginationChange: (updater) => {
+        const newState =
+            typeof updater === "function"
+            ? updater({ pageIndex, pageSize })
+            : updater;
 
-    const onSelectChange = (value = 0) => {
-        table.setPageSize(Number(value))
-    }
-
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+        },
+        getCoreRowModel: getCoreRowModel(),
+    });
     if (error) {
         return <div>{error || error.message}</div>
     }
     return (
         <div>
-            <Card>
-                <Table>
-                    <THead>
-                        <Tr>
-                            <Th>Sl. No.</Th>
-                            <Th>Type</Th>
-                            <Th>Credit</Th>
-                            <Th>Debit</Th>
-                            <Th>Remark</Th>
-                            <Th>Description</Th>
-                            <Th>Date</Th>
-                        </Tr>
-                    </THead>
-                    {loading ?
-                        <TableRowSkeleton
-                        columns={6}
-                        rows={10}
-                        avatarInColumns={[1]}
-                        avatarProps={{ width: 28, height: 28 }}
-                        />
-                    :
-                    <TBody>
-                        {table.getRowModel().rows.map((row) => {
-                            return (
-                                <Tr key={row.original.id}>
-                                    <Td>{row.index + 1}</Td>
-                                    <Td>{row.original.type}</Td>
-                                    <Td>{row.original.type === 'cr' ? row.original.amount : 0}</Td>
-                                    <Td>{row.original.type === 'dr' ? row.original.amount : 0}</Td>
-                                    <Td>{row.original.remark}</Td>
-                                    <Td>{row.original.description}</Td>
-                                    <Td>{dayjs.unix(Date.parse(row.original.created_at)/1000).format('D MMM, YYYY h:mm a')}</Td>
-                                </Tr>
-                            )
-                        })}
-                    </TBody>
-                    }
-                </Table>
-                <div className="flex items-center justify-between mt-4">
-                <Pagination
-                    pageSize={table.getState().pagination.pageSize}
-                    currentPage={table.getState().pagination.pageIndex + 1}
-                    total={totalRecord}
-                    onChange={onPaginationChange}
-                />
-                {console.log('totalRecord', totalRecord)}
-                <div style={{ minWidth: 130 }}>
-                    <Select
-                        size="sm"
-                        isSearchable={false}
-                        value={pageSizeOption.filter(
-                            (option) =>
-                                option.value ===
-                                table.getState().pagination.pageSize,
-                        )}
-                        options={pageSizeOption}
-                        onChange={(option) => onSelectChange(option?.value)}
+        <Card>
+            <Table>
+                <THead>
+                    <Tr>
+                        <Th>Sl. No.</Th>
+                        <Th>Type</Th>
+                        <Th>Credit</Th>
+                        <Th>Debit</Th>
+                        <Th>Remark</Th>
+                        <Th>Description</Th>
+                        <Th>Date</Th>
+                    </Tr>
+                </THead>
+                {loading ?
+                    <TableRowSkeleton
+                    columns={7}
+                    rows={pageSize}
+                    avatarInColumns={[1]}
+                    avatarProps={{ width: 28, height: 28 }}
                     />
-                </div>
+                :
+                <TBody>
+                    {table.getRowModel().rows.map((row) => {
+                        return (
+                            <Tr key={row.original.id}>
+                                <Td>{row.index + 1 + pageSize * (pageIndex - 1)}</Td>
+                                <Td>{row.original.type}</Td>
+                                <Td>{row.original.type === 'cr' ? row.original.amount : 0}</Td>
+                                <Td>{row.original.type === 'dr' ? row.original.amount : 0}</Td>
+                                <Td>{row.original.remark}</Td>
+                                <Td>{row.original.description}</Td>
+                                <Td>{dayjs.unix(Date.parse(row.original.created_at)/1000).format('D MMM, YYYY h:mm a')}</Td>
+                            </Tr>
+                        )
+                    })}
+                </TBody>
+                }
+            </Table>
+            <div className="flex items-center justify-between mt-4">
+            <Pagination
+                pageSize={pageSize}
+                currentPage={pageIndex}
+                total={recordCount}
+                onChange={setPageIndex}
+            />
+            
+            <div style={{ minWidth: 130 }}>
+                <Select
+                    size="sm"
+                    isSearchable={false}
+                    value={appConfig.pageSizeOption.filter(
+                        (option) =>
+                            option.value ===
+                            table.getState().pagination.pageSize,
+                    )}
+                    options={appConfig.pageSizeOption}
+                    onChange={(option) => {
+                        setPageSize(option?.value)
+                        setPageIndex(1)
+                    }}
+                />
             </div>
-            </Card>
         </div>
-    )
+        </Card>
+    </div>
+    );
 }
-
-export default WalletHistory

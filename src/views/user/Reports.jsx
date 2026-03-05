@@ -8,19 +8,29 @@ const Reports = () => {
     const [dateRange, setDateRange] = useState([null, null])
     const handleReport = (type) => {
         let url = '';
+        let params = {};
         switch (type) {
             case 'stock_report':
                 url = '/stock-report-download'
                 break;
             case 'sales_report':
+                params = {
+                    start_date: dayjs(dateRange[0]).format('YYYY-MM-DD'),
+                    end_date: dayjs(dateRange[1]).format('YYYY-MM-DD'),
+                };
                 url = '/sales-report-download'
                 break;
             case 'item_sales_report':
-                url = '/item-sales-report-download/' + dayjs(dateRange[0]).format('YYYY-MM-DD') + '/' + dayjs(dateRange[1]).format('YYYY-MM-DD')
+                params = {
+                    start_date: dayjs(dateRange[0]).format('YYYY-MM-DD'),
+                    end_date: dayjs(dateRange[1]).format('YYYY-MM-DD'),
+                };
+                url = '/item-sales-report-download'
                 break;
         }
         ApiService.fetchDataWithAxios({
             url: url,
+            params: params,
             method: 'get',
             responseType: 'blob',
         }).then((response) => {

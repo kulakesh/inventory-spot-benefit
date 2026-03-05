@@ -96,7 +96,7 @@ const franchiseeRoute = [
     {
         key: `${FRANCHISEE}:wallet-history`,
         path: `${FRANCHISEE}/wallet/history`,
-        component: lazy(() => import('@/views/franchisee/WalletHistory2')),
+        component: lazy(() => import('@/views/franchisee/WalletHistory')),
         authority: [FRANCHISEE],
         meta: {
             pageBackgroundType: 'plain',
