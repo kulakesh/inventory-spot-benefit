@@ -41,6 +41,7 @@ const ProductSelectSection = (props) => {
                 setSelectedProduct(selectedProduct)
             }
         }
+        setInputValue('')
     }
 
     const handleProductIncremental = (productToIncrease) => {
@@ -178,7 +179,7 @@ const ProductSelectSection = (props) => {
                         variant="solid"
                         onClick={() => setProductsDialogOpen(true)}
                     >
-                        Browse products
+                        Browse
                     </Button>
                 </div>
                 <Table compact={smaller.sm} className="mt-6">
@@ -194,7 +195,7 @@ const ProductSelectSection = (props) => {
                     <TBody>
                         {selectedProduct.length > 0 ? (
                             selectedProduct.map((product) => (
-                                <Tr key={product.id}>{console.log(product)}
+                                <Tr key={product.id}>
                                     <Td>
                                         <div className="flex items-center gap-2">
                                             <Avatar
@@ -311,8 +312,8 @@ const ProductSelectSection = (props) => {
                     </TBody>
                 </Table>
                 <div className="mt-8 flex justify-between">
-                    <span className="text-base flex items-center gap-2">
-                        <span className="font-semibold">Total BV: </span>
+                    <div className="flex flex-col items-start gap-2">
+                        <span className="font-semibold">Total BV:</span>
                         <span className="text-lg font-bold heading-text">
                             <NumericFormat
                                 fixedDecimalScale
@@ -321,8 +322,8 @@ const ProductSelectSection = (props) => {
                                 decimalScale={2}
                             />
                         </span>
-                    </span>
-                    <span className="text-base flex items-center gap-2">
+                    </div>
+                    <span className="flex flex-col items-start gap-2">
                         <span className="font-semibold ">Wallet Balance: </span>
                         <span className={`text-lg font-bold heading-text ${walletBallance >= total ? 'text-emerald-500' : 'text-rose-500'}`}>
                             <NumericFormat
@@ -335,7 +336,7 @@ const ProductSelectSection = (props) => {
                             />
                         </span>
                     </span>
-                    <span className="text-base flex items-center gap-2">
+                    <span className="flex flex-col items-start gap-2">
                         <span className="font-semibold">Grand Total: </span>
                         <span className="text-lg font-bold heading-text">
                             <NumericFormat

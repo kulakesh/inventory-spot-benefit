@@ -4,11 +4,13 @@ import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import Container from '@/components/shared/Container'
 import ConfirmDialog from '@/components/shared/ConfirmDialog'
+import Dialog from '@/components/ui/Dialog'
 import OrderForm from './OrderForm'
 import { TbTrash } from 'react-icons/tb'
 import { useOrderFormStore } from './store/orderFormStore'
 import { useAuth } from '@/auth'
 import ApiService from '@/services/ApiService'
+import { set } from 'lodash'
 
 async function pushData(data) {
     return ApiService.fetchDataWithAxios({
@@ -22,6 +24,9 @@ const PurchaseOrder = () => {
     const { setSelectedProduct, selectedProduct } = useOrderFormStore()
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false)
+    const [orderSuccessDialog, setOrderSuccessDialog] = useState(false)
+    const [orderFailureDialog, setOrderFailureDialog] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const [isSubmiting, setIsSubmiting] = useState(false)
 
     const handleFormSubmit = async (values) => {
@@ -48,19 +53,14 @@ const PurchaseOrder = () => {
         try{
             const resp = await pushData(orderDetails)
             if (resp) {
-                toast.push(
-                    <Notification type="success">Order Placed!</Notification>,
-                    { placement: 'top-center' },
-                )
+                setOrderSuccessDialog(true)
                 setSelectedProduct([])
             }
         }catch (e) {
-            toast.push(
-                <Notification type="danger">
-                    {e?.response?.data?.message || e.message.toString() || e.toString()}
-                </Notification>,
-                { placement: 'top-center' },
+            setErrorMessage(
+                e?.response?.data?.message || e.message.toString() || e.toString(),
             )
+            setOrderFailureDialog(true)
         }
         setIsSubmiting(false)
     }
@@ -125,6 +125,26 @@ const PurchaseOrder = () => {
                     be undo.{' '}
                 </p>
             </ConfirmDialog>
+            <Dialog isOpen={orderSuccessDialog} onClose={() => setOrderSuccessDialog(false)}>
+                <h5 className="mb-4">Order Placed</h5>
+                <p>
+                    Your order has been placed successfully. You can check the order status in the order history section.
+                </p>
+                <div className="text-right mt-6">
+                    <Button variant="solid" onClick={() => setOrderSuccessDialog(false)}>
+                        Okay
+                    </Button>
+                </div>
+            </Dialog>
+            <Dialog isOpen={orderFailureDialog} onClose={() => setOrderFailureDialog(false)}>
+                <h5 className="mb-4 text-red-600 dark:text-red-100">Error</h5>
+                <p>{errorMessage}</p>
+                <div className="text-right mt-6">
+                    <Button variant="solid" onClick={() => setOrderFailureDialog(false)}>
+                        Okay
+                    </Button>
+                </div>
+            </Dialog>
         </>
     )
 }
