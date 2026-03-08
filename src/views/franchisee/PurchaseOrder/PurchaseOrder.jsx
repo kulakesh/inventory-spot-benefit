@@ -25,6 +25,7 @@ const PurchaseOrder = () => {
 
     const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false)
     const [orderSuccessDialog, setOrderSuccessDialog] = useState(false)
+    const [walletBalanceAfter, setWalletBalanceAfter] = useState(null)
     const [orderFailureDialog, setOrderFailureDialog] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [isSubmiting, setIsSubmiting] = useState(false)
@@ -55,6 +56,7 @@ const PurchaseOrder = () => {
             if (resp) {
                 setOrderSuccessDialog(true)
                 setSelectedProduct([])
+                setWalletBalanceAfter(resp?.wallet_balance)
             }
         }catch (e) {
             setErrorMessage(
@@ -84,7 +86,7 @@ const PurchaseOrder = () => {
 
     return (
         <>
-            <OrderForm onFormSubmit={handleFormSubmit}>
+            <OrderForm onFormSubmit={handleFormSubmit} walletBalanceAfter={walletBalanceAfter}>
                 <Container>
                     <div className="flex items-center justify-between px-8">
                         <span></span>

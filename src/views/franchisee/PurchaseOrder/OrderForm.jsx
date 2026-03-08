@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { Form } from '@/components/ui/Form'
 import Container from '@/components/shared/Container'
 import BottomStickyBar from '@/components/template/BottomStickyBar'
@@ -20,7 +20,7 @@ const OrderForm = (props) => {
     const [loading, setLoading] = useState(true);
     const [apierror, setApiError] = useState(null);
     const [walletBalance, setWalletBalance] = useState(0);
-    const { onFormSubmit, children, defaultValues, defaultProducts } = props
+    const { onFormSubmit, children, defaultValues, defaultProducts, walletBalanceAfter } = props
 
     const { setProductList, setSelectedProduct } =
         useOrderFormStore()
@@ -37,6 +37,9 @@ const OrderForm = (props) => {
             setLoading(false);
         })
     }, []);
+    useEffect(() => {
+        setWalletBalance(walletBalanceAfter);
+    }, [walletBalanceAfter]);
 
 
     // useEffect(() => {
