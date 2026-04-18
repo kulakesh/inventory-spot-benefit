@@ -67,7 +67,7 @@ const Franchisee = () => {
     const [loading, setLoading] = useState(id ? true : false);
     const [apierror, setApiError] = useState(null);
     const [skuOptions, setSkuOptions] = useState([
-                { label: 'SKU Name', value: 'sku_id', icon: <PiWarehouseDuotone /> },,
+                { label: 'SKU Name', value: 'sku_id', icon: <PiWarehouseDuotone /> },
             ]);
     
     useEffect(() => {
