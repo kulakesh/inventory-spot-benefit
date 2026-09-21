@@ -37,7 +37,7 @@ const CustomControl = ({ children, ...props }) => {
     )
 }
 
-const PaymentMethodSection = ({ control, errors, selectedPaymentMethod, paymentMethodOptions }) => {
+const PaymentMethodSection = ({ control, errors, paymentMethodOptions }) => {
     
     return (
         <Card id="payment">

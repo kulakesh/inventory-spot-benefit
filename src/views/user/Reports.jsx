@@ -13,6 +13,9 @@ const Reports = () => {
             case 'stock_report':
                 url = '/stock-report-download'
                 break;
+            case 'stock_reportY2526':
+                url = '/stock-report-download/Y2526'
+                break;
             case 'sales_report':
                 params = {
                     start_date: dayjs(dateRange[0]).format('YYYY-MM-DD'),
@@ -87,6 +90,14 @@ const Reports = () => {
                     onClick={() => handleReport('item_sales_report')}
                 >
                     Product Sales Report
+                </Button>
+                <Button
+                    block
+                    type="button"
+                    variant="solid"
+                    onClick={() => handleReport('stock_reportY2526')}
+                >
+                    Stock Report Y2526
                 </Button>
             </div>
         </>

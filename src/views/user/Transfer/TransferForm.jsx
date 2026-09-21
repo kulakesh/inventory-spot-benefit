@@ -90,8 +90,6 @@ const SalesForm = (props) => {
         },
         resolver: zodResolver(baseValidationSchema),
     })
-    
-    const selectedSku = watch('sku_id', '')
 
     if (apierror) {
         return <div>{apierror.message}</div>
@@ -116,9 +114,6 @@ const SalesForm = (props) => {
                                     control={control}
                                     errors={errors}
                                     skuOptions={skuOptions}
-                                    selectedSku={
-                                        selectedSku
-                                    }
                                 />
                             </div>
                         </div>

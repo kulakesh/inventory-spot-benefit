@@ -34,7 +34,7 @@ const CustomControl = ({ children, ...props }) => {
     )
 }
 
-const SkuSection = ({ control, errors, selectedSku, skuOptions }) => {
+const SkuSection = ({ control, errors, skuOptions }) => {
     
     return (
         <Card id="sku">

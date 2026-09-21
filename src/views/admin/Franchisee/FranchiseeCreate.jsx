@@ -107,13 +107,12 @@ const Franchisee = () => {
             address: '',
             pin: '',
             gstin: '',
+            sku_id: '',
             username: '',
             password: '',
         },
         resolver: zodResolver(validationSchema(id)),
     })
-
-    const selectedSku = watch('sku_id', '')
 
     const [message, setMessage] = useTimeOutMessage()
 
@@ -331,9 +330,6 @@ const Franchisee = () => {
                                 control={control}
                                 errors={errors}
                                 skuOptions={skuOptions}
-                                selectedSku={
-                                    selectedSku
-                                }
                             />
 
                             <FormItem

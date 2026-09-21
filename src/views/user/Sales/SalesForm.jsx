@@ -106,8 +106,6 @@ const SalesForm = (props) => {
         },
         resolver: zodResolver(baseValidationSchema),
     })
-    
-    const selectedPaymentMethod = watch('paymentMethod', '')
 
     if (apierror) {
         return <div>{apierror.message}</div>
@@ -143,9 +141,6 @@ const SalesForm = (props) => {
                                     control={control}
                                     errors={errors}
                                     paymentMethodOptions={paymentMethodOptions}
-                                    selectedPaymentMethod={
-                                        selectedPaymentMethod
-                                    }
                                 />
                             </div>
                         </div>
